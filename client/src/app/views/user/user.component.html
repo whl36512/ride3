@@ -1,0 +1,48 @@
+<div class="center f12">User Profile</div>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+	<dl>
+		<dt>
+			Last Name : {{user_from_db.last_name}}
+		</dt>
+		<dt>
+			First Name : {{user_from_db.first_name}}
+		</dt>
+		<dt>
+			Headline : {{user_from_db.headline}}
+		</dt>
+		<dt class=f08>
+			Headline will be visible to other users
+		</dt>
+		<dt>
+			Balance : ${{user_from_db.balance}}
+		</dt>
+		<dt>
+			<span class='button clickable-text' >
+				<a [href]='user_from_db.sm_link' target=_blank>LinkedIn Profile</a>
+            </span>
+		</dt>
+		<dt>
+ 			<label><input type=checkbox formControlName='profile_ind'/>
+				Show LinkedIn Profile to other users
+			</label>
+		</dt>
+		<dt>Email </dt>
+		<dd>      
+          		<input  type="email"  formControlName="email" value="{{user_from_db.email}}"  
+					placeholder="Email Address" required 
+                  		pattern="{{C.EMAIL_PATTERN}}" 
+                /> 
+                         <span class="validity"></span>
+          	</dd>
+        </dl>
+        <br/>
+	<!--button type="submit" [disabled]="form.invalid" -->
+	<button type="submit">Save</button>
+</form>
+<div *ngIf='error_msg!=null' 	class='fade error'>{{error_msg}}</div>
+<div *ngIf='warning_msg!=null' 	class='fade warning' >{{warning_msg}}</div>
+<div *ngIf='info_msg!=null' 	class='fade info'>{{info_msg}}</div>
+<p>
+<div class=f08>
+	<app-misc></app-misc>
+</div>

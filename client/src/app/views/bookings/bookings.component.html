@@ -1,0 +1,119 @@
+<div *ngIf='error_msg!=null' class=error>{{error_msg}}</div>
+<div *ngIf='warning_msg!=null' class=warning>{{warning_msg}}</div>
+<div class=warning *ngIf='false'>change_detect_count={{change_detect_counter()}}</div>
+<div *ngIf='info_msg!=null' class=info>{{info_msg}}</div>
+<div *ngFor="let booking of forms ;let i=index;
+		let even=even;let odd=odd; let first = first; let last = last; trackBy:trackByFunc"
+		[ngClass]="{ odd: odd, even: even }">
+	<form [formGroup]="booking" (ngSubmit)='onSubmit()'
+		*ngIf='bookings_from_db[i].show_booking'>
+      	<table>
+		<thead>
+			<tr >
+				<th>#</th>
+				<th>Date/Time</th>
+				<th *ngIf='bookings_from_db[i].book_id == null' >Seats</th>
+				<th *ngIf='bookings_from_db[i].book_id == null' >Price($/mile)</th>
+				<th *ngIf='bookings_from_db[i].book_id != null'>Booked</th>
+				<th *ngIf='bookings_from_db[i].book_id != null'>Price($)</th>
+				<th>Status</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>{{i+1}}<br/>
+				<td>{{bookings_from_db[i].journey_date}}<br/>
+					{{bookings_from_db[i].departure_time}}</td>
+				<td *ngIf='bookings_from_db[i].book_id == null' > 
+					{{booking.value.seats}}<br/>
+	<input class=zoom type="range" formControlName="seats" min="0" max="{{C.MAX_SEATS}}" step=1 />
+				</td>
+				<td *ngIf='bookings_from_db[i].book_id == null' > 
+					{{booking.value.price}}<br/>
+	<input class=zoom type="range" formControlName="price" min="0" max="{{C.MAX_PRICE}}" step=0.01 />
+				</td>
+				<td *ngIf='bookings_from_db[i].book_id != null'>{{bookings_from_db[i].seats}}</td>
+				<td *ngIf='bookings_from_db[i].book_id != null'>{{bookings_from_db[i].unified_cost}}</td>
+				<td class='warning width05' >{{bookings_from_db[i].book_status_description}}</td>
+
+				
+			</tr>
+		</tbody>
+	</table>
+	<button *ngIf='bookings_from_db[i].show_msg_button'
+		(click)="message(null, i, null)">
+		Message
+		<span *ngIf='bookings_from_db[i].show_messaging_panel' > &#xfe3f;</span>
+		<span *ngIf='!bookings_from_db[i].show_messaging_panel' > &#xfe40;</span>
+	</button>
+	<button (click)="update(booking,i)" *ngIf='bookings_from_db[i].show_update_button' 
+		title='Change available seats and unit price'>Update available seats and price
+	</button>
+	<span *ngIf='bookings_from_db[i].update_msg!=null' class="info fade">
+		{{bookings_from_db[i].update_msg}}
+	</span>
+	<button *ngIf='bookings_from_db[i].show_confirm_button' 
+		(click)="action(booking,i, C.URL_CONFIRM)">Confirm
+	</button>
+	<button *ngIf='bookings_from_db[i].show_reject_button'
+		(click)="action(booking,i, C.URL_REJECT)">Reject
+	</button>
+	
+	<button *ngIf='bookings_from_db[i].show_driver_cancel_button' 
+		(click)="action(booking,i, C.URL_REJECT)">Cancel
+	</button>
+	<button *ngIf='bookings_from_db[i].show_rider_cancel_button'
+		(click)="action(booking,i, C.URL_CANCEL_BOOKING)">Cancel
+	</button>
+	<button *ngIf='bookings_from_db[i].show_finish_button'
+		(click)="action(booking,i, C.URL_FINISH)">Finish
+	</button>
+	<span *ngIf='bookings_from_db[i].fail_msg!=null' class='error fade'>
+		{{bookings_from_db[i].fail_msg}}
+	</span>
+	<app-message *ngIf='bookings_from_db[i].show_messaging_panel'
+                        [book_id]="bookings_from_db[i].book_id"
+                        [index]="i"
+                        >
+	</app-message>
+	<div >
+ 		<div *ngIf='!bookings_from_db[i].is_driver' >
+ 			<span class='driver clickable-text' >
+				<a [href]='bookings_from_db[i].sm_link' target=_blank>Driver:</a>
+			</span>
+			{{bookings_from_db[i].headline}} 
+ 			<span class=warning *ngIf='!(bookings_from_db[i].sm_link)'>
+				LinkedIn profile opted out
+			</span>
+ 			<span class='button clickable-text'  *ngIf='bookings_from_db[i].sm_link'>
+				<a [href]='bookings_from_db[i].sm_link' target=_blank>LinkedIn Profile</a>
+			</span>
+		</div>
+		<span class='from clickable-text' (click)='geo_mark(i)'>Driver from:</span> 
+		{{bookings_from_db[i].start_display_name}} <br/>
+		<span class='to clickable-text' (click)='geo_mark(i)' >Driver to:</span> 
+		{{bookings_from_db[i].end_display_name}} <br/>
+		<span *ngIf='bookings_from_db[i].book_id!=null'>
+			<span  *ngIf='!bookings_from_db[i].is_rider'>
+ 				<span class='driver clickable-text' >
+					<a [href]='bookings_from_db[i].sm_link' target=_blank>Passenger:</a>
+				</span>
+				{{bookings_from_db[i].headline}} 
+ 				<span class=warning *ngIf='!(bookings_from_db[i].sm_link)'>
+				LinkedIn profile opted out
+				</span>
+ 				<span class='button clickable-text'  *ngIf='(bookings_from_db[i].sm_link)' >
+					<a [href]='bookings_from_db[i].sm_link' target=_blank>LinkedIn Profile</a>
+				</span> <br/>
+			</span>
+			<span class='from clickable-text' (click)='geo_mark(i)'>Passenger Pickup:</span> 
+			{{bookings_from_db[i].pickup_display_name}}<br/>
+			<span class='to clickable-text' (click)='geo_mark(i)'>Passenger Dropoff:</span> 
+			{{bookings_from_db[i].dropoff_display_name}} <br/>
+		</span>
+		<span class='button clickable-text' [innerHTML]="bookings_from_db[i].google_map_url"></span>
+		<div>Description: {{bookings_from_db[i].description}}</div>
+	</div>
+    </form>
+<p>
+</div>

@@ -1,0 +1,97 @@
+<div class="center f12">Search Setting</div>
+<div class=hide-unhide>
+    <button (click)='show_body=C.BODY_NOSHOW' *ngIf='show_body==C.BODY_SHOW'> {{C.ICON_ARROW_UP}}  </button>
+    <button (click)='show_body=C.BODY_SHOW'   *ngIf='show_body==C.BODY_NOSHOW'> {{C.ICON_ARROW_DOWN}}</button>
+</div>
+
+<div class={{show_body}} >
+
+	<form [formGroup]="form" (ngSubmit)="onSubmit()">
+		<dl> 
+	  		<dt>
+				<label for="p1_loc">Pickup Location
+				</label>
+			</dt>
+	  		<dd>
+	   			<input  type="text"  id="p1_loc" formControlName="p1_loc" 
+					placeholder="From" required
+					(keyup)='geocode("p1_loc", trip, form)' 
+					pattern=".{3,}"
+				/>
+				<span class="validity"></span>
+			</dd>
+	  		<dd  class="f08 clickable-text" (click)='show_map()'> 
+				{{trip.p1.lat}}  {{trip.p1.lon}} <br/>
+				{{trip.p1.display_name}}
+			</dd>
+		</dl>
+
+		<dl>
+	  		<dt>
+				<label for="p2_loc">Dropoff Location</label>
+			</dt>
+	  		<dd>
+	   			<input  type="text"  id="p2_loc" formControlName="p2_loc" 
+					placeholder="To" required
+					(keyup)='geocode("p2_loc", trip, form)'  
+					pattern=".{3,}"
+				/>
+				<span class="validity"></span> 
+			</dd>
+			<dd class="f08 clickable-text" (click)='show_map()'>
+				{{trip.p2.lat}} {{trip.p2.lon}} <br/>
+				{{trip.p2.display_name	}}
+			</dd>
+			<dt>
+			Distance (miles): 
+			<span *ngIf="trip.distance==C.ERROR_NO_ROUTE " class=error>No route</span>
+			<span *ngIf="trip.distance!=C.ERROR_NO_ROUTE "	   >{{trip.distance}}</span>
+			</dt>
+		</dl>
+
+		<dl>
+	  		<dt><label for="date1">Date Range from</label></dt>
+	  		<dd> <input type="date" formControlName="date1" min={{C.TODAY()}} required/> 
+				<span class="validity"></span>
+			</dd>
+	  		<dt><label for="date2">to</label></dt>
+	  		<dd> <input type="date" formControlName="date2" min={{this.form.value.date1}} /> 
+				<span class="validity"></span>
+			</dd>
+
+	  		<dt><label for="departure_time">Departure Time</label></dt>
+	  		<dd> <input type="time" formControlName="departure_time" step="60" /> </dd>
+		</dl>
+
+		<dl>
+			<dt><label for="seats">Passengers: {{this.form.value.seats}}  </label></dt>
+	  		<dd>
+			<input type="range" formControlName="seats" min="1" max="{{C.MAX_SEATS}}" step=1 /> 
+	  		</dd>
+
+			<dt><label for="price">Max Price: ${{this.form.value.price}} per mile per passenger</label></dt>
+	  		<dd>
+			<input type="range" formControlName="price" min="0" max="{{C.MAX_PRICE_RIDER}}" step=0.01 />
+	  		</dd>
+		</dl>
+		<dl>
+			You can reduce number of search results by tightening searches.
+			<dt><label for="seats">Tightness Level: {{this.form.value.search_tightness}}  </label></dt>
+	  		<dd>
+			<input type="range" formControlName="search_tightness" min="0" max="{{C.MAX_SEARCH_TIGHTNESS}}" step=1 /> 
+	  		</dd>
+
+		</dl>
+		
+		<div class=center>
+		<button type="button" (click)='action(true)'
+			[disabled]="form.invalid || !trip.distance || trip.distance==C.ERROR_NO_ROUTE " >
+			Save Settings to this Device and Start Map Search
+		</button> 
+		</div>
+      	</form>
+	<div *ngIf='error_msg!=null' class='fade error'>{{error_msg}}</div>
+	<div *ngIf='warning_msg!=null' class='fade warning'>{{warning_msg}}</div>
+	<div *ngIf='info_msg!=null' class='fade info'>{{info_msg}}</div>
+
+	</div>

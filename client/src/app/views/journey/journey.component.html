@@ -1,0 +1,59 @@
+<div class=hide-unhide>
+	<button (click)='show_body=C.BODY_NOSHOW' *ngIf='show_body==C.BODY_SHOW'> {{C.ICON_ARROW_UP}}  </button>
+	<button (click)='show_body=C.BODY_SHOW'   *ngIf='show_body==C.BODY_NOSHOW'> {{C.ICON_ARROW_DOWN}}</button>
+</div>
+<div class='center f12'>Available Trips</div>
+<div class={{show_body}} >
+	<div *ngIf='error_msg!=null' 	class=error [innerHTML]='error_msg'></div>
+	<div *ngIf='warning_msg!=null' 	class=warning [innerHTML]='warning_msg'></div>
+	<div *ngIf='info_msg!=null' 	class=info [innerHTML]='info_msg'></div>
+
+
+	<div *ngFor="let journey of journeys_from_db ;let i=index;
+		let even=even;let odd=odd; let first = first; let last = last; trackBy:trackByFunc"
+		[ngClass]="{ odd: odd, even: even }">
+      	<table>
+			<thead>
+				<tr >
+					<th>#</th>
+					<th>Date/Time</th>
+					<th>Seats</th>
+					<th>Price($)</th>
+					<th *ngIf='is_signed_in'>Booked</th>
+					<th *ngIf='journey.status_msg' class=warning [innerHTML]='journey.status_msg'>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>{{i+1}}</td>
+					<td>{{journey.journey_date}}<br/>
+					{{journey.departure_time}}</td>
+					<td>{{journey.seats}}</td>
+					<td>{{journey.rider_cost}} </td>
+					<td *ngIf='is_signed_in'>{{journey.seats_booked}}</td>
+					<td>
+						<button #j (click)="book(journey)"
+							[disabled]='!journey.show_book_button'
+						>Book it</button>
+					</td>
+					<td *ngIf='journey.error_msg' class=error 	[innerHTML]='journey.error_msg'></td>
+					<td *ngIf='journey.info_msg'  class=info 	[innerHTML]='journey.info_msg'></td>
+				</tr>
+			</tbody>
+		</table>
+		<div class=f08 ><span (click)='false'  
+			class='driver clickable-text' >Driver:</span>{{journey.headline}}</div>
+		<div class=f08 ><span (click)='show_map(i)' 
+			class='from clickable-text' >Driver from:</span>{{journey.start_display_name}}</div>
+		<div class=f08 ><span (click)='show_map(i)' 
+			class='to clickable-text' >Driver to:</span>{{journey.end_display_name}}</div>
+		<div class=f08 ><span (click)='show_map(i)' 
+			class='from clickable-text' >Passenger from:</span>{{rider_criteria.p1.display_name}}</div>
+		<div class=f08 ><span (click)='show_map(i)' 
+			class='to clickable-text' >Passenger to:</span>{{rider_criteria.p2.display_name}}</div>
+		<span class='f08 button clickable-text' [innerHTML]="journey.google_map_url"></span>
+		<div class=f08 >Description: {{journey.description}}</div>
+		<p>
+	</div>
+</div>

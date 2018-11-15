@@ -1,0 +1,57 @@
+[package]
+name = "server"
+version = "0.1.0"
+authors = ["whl36512 <whl36512@gmail.com>"]
+
+[dependencies]
+router = "*"
+iron  = "*"
+log = "*"
+simplelog = "^0.5.0"
+#diesel = { version = "1.3.0", features = ["postgres"] }
+url    = "*"
+#postgres = { version = "*", features = ["with-rustc-serialize", "with-uuid"] }
+postgres = { version = "*", features = ["with-serde_json", "with-uuid"] }
+r2d2_postgres ="*"
+r2d2 ="*"
+#rustc-serialize = "*"
+serde_json = "*"
+serde_derive = "*"
+serde = "*"
+params ="*"
+
+#hyper ="0.10.13"
+#json = "*"
+iron-postgres-middleware = {git = "https://github.com/whl36512/iron-postgres-middleware.git"}
+db= {git = "https://github.com/whl36512/db.git" }
+#imap= {git = "https://github.com/mattnenterprise/rust-imap.git"}
+#openssl = { version = "0.10", features = ["vendored"] }
+#hyper-openssl = "*"
+hyper-native-tls = "*"
+#native-tls = "0.2"
+#rust-crypto = "^0.2"
+rand = "*"
+data-encoding = "*"
+secure-session ="*"
+typemap = "*"
+iron-cors ="*"
+unicase = "*"
+chrono = "*"
+jsonwebtoken ="*"
+#regex = "1"
+
+
+
+#reqwest = "*"
+#diesel = {version="1.1.0", features = ["postgres"]}
+#env_logger = "0.5.3"
+#futures = "0.1.17"
+#hyper = "0.11.14"
+#log = "0.4.1"
+#maud = "0.17.3"
+#serde = "1.0.27"
+#serde_derive = "1.0.27"
+#serde_json = "1.0.9"
+#syn = "0.12.7"
+#url = "1.6.0"
+

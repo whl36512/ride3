@@ -1,0 +1,111 @@
+<div  class="topnav" tabindex="-1"  id="topnav"	 >
+	<div id=navicon type=button (click)="toggle()" > &#9776; </div>
+	<div *ngIf='error_msg!=null' class=error>{{error_msg}}</div>
+	<div *ngIf='warning_msg!=null' class='fade warning'>{{warning_msg}}</div>
+	<div *ngIf='info_msg!=null' class=info>{{info_msg}}</div>
+
+
+
+	<ul class="nav" *ngIf="show_nav&&false"  >
+		 	<li			(click)="select(C.PAGE_SEARCH)" 		>Search</li>
+		 	<li *ngIf="is_signed_in" (click)="select(C.PAGE_TRIP)" 		>Post a Trip</li>
+		 	<li *ngIf="is_signed_in" (click)="select(C.PAGE_ACTIVITY)"		>My Activities</li>
+		 	<li *ngIf="is_signed_in" (click)="select(C.PAGE_THIST)"		>Transaction History</li>
+		<li *ngIf="is_signed_in" (click)="select(C.PAGE_USER)" 		>My Profile</li>
+		<li			(click)="select(C.PAGE_DEPOSIT)"  	>Deposit</li>
+		<li			(click)="select(C.PAGE_WITHDRAW)"  	>Withdraw</li>
+		<li			(click)="select(C.PAGE_CONTACT_US)"  	>Contact Us</li>
+		<li			(click)="select(C.PAGE_TOU)"  		>Terms of Use</li>
+		<li			(click)="list_global_objects()"  		>List Global</li>
+	</ul>
+
+	 	<ul class="nav" *ngIf="show_nav"  >
+		<a routerLink='/search_setting' 	
+			routerLinkActive='active' 
+			(click)="nav_menu_off(); map_search_stop()"	>
+			<li>
+				Search Setting
+			</li>			
+		</a>
+		<a routerLink='/map_search_start' 		
+			routerLinkActive='active' 
+			*ngIf="true||!Status.is_in_map_search" 
+			(click)="nav_menu_off(); map_search_start()">
+			<li>
+				Search on Map
+			</li>			
+		</a>
+		<a routerLink='/show_search_result' 		
+			routerLinkActive='active' 
+			(click)="nav_menu_off(); map_search_stop()">
+			<li>
+				List Search Result
+			</li>			
+		</a>
+		<a routerLink='/Trip' 		
+			routerLinkActive='active' 	
+			*ngIf="is_signed_in" 
+			(click)="nav_menu_off();map_search_stop()">
+			<li>
+				Post a Trip		
+			</li>			
+		</a>
+		<a routerLink='/Activity'	
+			routerLinkActive='active' 	
+			*ngIf="is_signed_in"	 
+			(click)="nav_menu_off(); map_search_stop()">
+			<li>
+				My Activities	
+			</li>			
+		</a>
+		<a routerLink='/Thist' 		
+			routerLinkActive='active'	
+			*ngIf="is_signed_in" 
+			(click)="nav_menu_off(); map_search_stop()">
+			<li>
+				Transaction History
+			</li>			
+		</a>
+		<a routerLink='/Profile'	
+			routerLinkActive='active'	
+			*ngIf="is_signed_in" 
+			(click)="nav_menu_off(); map_search_stop()">
+			<li>
+				My Profile
+			</li>			
+		</a>
+		<a routerLink='/Deposit' 	
+			routerLinkActive='active '		 
+			(click)="nav_menu_off(); map_search_stop()">
+			<li>
+				Deposit
+			</li>			
+		</a>
+		<a routerLink='/Withdraw' 	
+			routerLinkActive='active '		 
+			(click)="nav_menu_off(); map_search_stop()">
+			<li>
+				Withdraw	
+			</li>			
+		</a>
+		<a routerLink='/misc' 	
+			routerLinkActive='active '		 
+			(click)="nav_menu_off()">
+			<li>
+				Legal Stuff
+			</li>			
+		</a>
+
+        <a *ngIf='!is_signed_in' onclick='ride.signin()' (click)="nav_menu_off()"> 
+			<li>
+				<img id='linkedin_signin' src="assets/images/Sign-In-Small---Default.png" 
+					alt="Sign in with LinkedIn" >
+			</li>			
+		</a>
+        <a *ngIf='is_signed_in' onclick='ride.signout()' (click)="nav_menu_off()">
+			<li>
+				Signout
+			</li>			
+		</a>
+	</ul>
+</div>

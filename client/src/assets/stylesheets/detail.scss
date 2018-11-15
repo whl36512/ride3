@@ -1,0 +1,266 @@
+#main {
+        /* use absolute so the main page can scroll */
+        position: absolute;
+        height: auto;
+        width: 100%;
+        top: 0rem;
+        left: 0rem;
+        overflow: visible;
+        z-index:250;
+        border: 0px solid #AAA;
+        font-size: 1rem;
+        background-color: #eee;
+        border-radius: 4px 4px 4px 4px;
+        padding: 0.20rem;
+        margin: 0.0rem, 0rem;
+		&.map-controller {
+        	background-color: rgba(0,0,0,0);
+		}
+}
+
+.signinout {
+        cursor: pointer;
+        position: fixed;
+        width: auto;
+        top: 0.5rem;
+        right: 3rem;
+        overflow: visible;
+        z-index:200;
+        border: 1px solid #AAA;
+        font-size: 1rem;
+        background-color: #eee;
+        border-radius: 4px 4px 4px 4px;
+        padding: 0.2rem;
+        margin: 0rem;
+}
+input:invalid+span:after {
+	content: 'X';
+	padding-left: 5px;
+	color: red;
+}
+
+input:valid+span:after {
+	content: '✓';
+	padding-left: 5px;
+	color: green;
+}
+
+textarea#description {
+	width: 100%;
+	height: 5rem;
+}
+
+input[type="time"] {
+	width: 8rem;
+}
+input[type="date"] {
+	width: 8rem;
+}
+
+.rTable {
+  	display: table;
+  	width: 100%;
+}
+.rTableRow {
+  	display: table-row;
+}
+.rTableCell, .rTableHead {
+  	display: table-cell;
+  	padding: 3px 10px;
+  	border: 1px solid #999999;
+}
+.rTableHeading {
+  	display: table-header-group;
+  	background-color: #ddd;
+  	font-weight: bold;
+}
+.rTableFoot {
+  	display: table-footer-group;
+  	font-weight: bold;
+  	background-color: #ddd;
+}
+.rTableBody {
+  	display: table-row-group;
+}
+
+.odd {
+        background-color: #eef;
+}
+.even {
+        background-color: #efe;
+}
+
+
+
+table {
+    border-collapse: collapse;
+}
+table, th, td {
+   border: 1px solid #ccc;
+   text-align: center; 
+   vertical-align: middle;
+}
+
+th {
+	font-size: 0.8rem
+}
+
+.error {
+	background-color: #ff9999;
+}
+.warning {
+	background-color: yellow;
+}
+.info {
+	background-color: #99ff99;
+}
+
+.from {
+	background-color: #99ff99;
+}
+.to {
+	background-color: #ff9999;
+}
+.driver {
+	background-color: yellow;
+}
+.mapicon {
+	text-align:center;
+	vertical-align: middle;
+}
+
+.clickable-text {
+  	cursor: pointer;
+  	border-radius: 0.3rem;
+        &:hover {
+        	background-color: #888;
+			color:white;
+        }
+}
+
+button.close-button {
+        /* use absolute to position child relative to its parent. 
+	parent must have absolue of fixed position */
+        position: fixed;
+        width: auto;
+        top: 0.5rem;
+        right: 4rem;
+	font-size: 1.5rem;
+	margin:0px;
+	padding:0.3rem;
+  	border-radius: 0.3rem;
+}
+.hide-unhide {
+        //use absolute to position child relative to its parent. 
+		//parent must have absolue of fixed position */
+        position: fixed;
+        width: auto;
+        top: 0.2rem ;
+        left: 0.2rem;
+}
+
+button {
+	background-color: #44e;
+	color: white;
+	border: 0 none;
+  	border-radius: 0.3rem;
+	margin:0.1rem;
+	padding:0.3rem;
+
+
+
+	&:hover {
+    	transition: all 150ms linear;
+	
+    	opacity: .85;
+  	}
+  
+  	&:active {
+    		transition: all 150ms linear;
+    		opacity: .75;
+  	}
+}
+
+button[disabled] {
+	opacity: .5;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+  }
+
+  5% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0%;
+  }
+}
+
+.fade {
+  opacity: 0;
+  animation-name: fadeInOut;
+  animation-delay: 0s;
+  animation-duration: 9s;
+}
+
+input[type="range"] {
+	width : 4rem;
+}
+
+span.popup {
+  height: 0;
+  color: #fff;
+  position: relative;
+  cursor: pointer;
+
+  &:after {
+    content: attr(data-popuptext);
+    background: rgba(0, 0, 0, 0.85);
+    border-radius: 3px;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    position: absolute;
+    transition: 500ms ease;
+    white-space: nowrap;
+    max-height: 0;
+  }
+  
+  &:hover:after {
+    opacity: 1;
+    top: 1.2em;
+    max-height: 200px;
+    padding: .4em;
+  }
+}
+
+/*disable copy for buttons and menus*/
+button, .topnav {
+-webkit-user-select: none;
+-khtml-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+-o-user-select: none;
+user-select: none;
+}
+
+.width05 {
+	width: 5rem;
+}
+
+.zoom:hover {
+    -ms-transform: scale(1.5); /* IE 9 */
+    -webkit-transform: scale(1.5); /* Safari 3-8 */
+    transform: scale(1.5); 
+}
+
+.button {
+	background-color: #44e;
+	color: white;
+	& a {
+		color: white;
+	}
+}

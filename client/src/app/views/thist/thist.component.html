@@ -1,0 +1,40 @@
+<div class="center f12">Transaction History</div>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+	<label for="date1">From: </label>
+	<input  type="date"  formControlName="date1" (change)='onChange()' />
+	<br/>
+	<label for="date2">To:</label>
+	<input  type="date" formControlName="date2" min={{form.value.date1}}
+	(change)='onChange()'
+	/>
+	<span class="validity"></span>
+	<br/>
+	Show history for <br/>
+	<label>
+		<input type=checkbox formControlName='show_booking'		(change)='on_filter()' />Booking
+	</label><br/>
+	<label>
+		<input type=checkbox formControlName='show_return'		(change)='on_filter()' />Return
+	</label><br/>
+	<label>
+		<input type=checkbox formControlName='show_penalty'		(change)='on_filter()' />Penalty
+	</label><br/>
+	<label>
+		<input type=checkbox formControlName='show_finished'	(change)='on_filter()' />Finished
+	</label><br/>
+	<label>
+		<input type=checkbox formControlName='show_deposit'		(change)='on_filter()' />Deposit
+	</label><br/>
+	<label>
+		<input type=checkbox formControlName='show_withdraw'	(change)='on_filter()' />Withdraw
+	</label><br/>
+</form>
+<div *ngIf='error_msg!=null'    class=error [innerHTML]='error_msg'></div>
+<div *ngIf='warning_msg!=null'  class=warning [innerHTML]='warning_msg'></div>
+<div *ngIf='info_msg!=null'     class=info [innerHTML]='info_msg'></div>
+
+<p>
+<app-thistlist *ngIf='trans_to_show.length!=0' [trnx_from_db]="trans_to_show" > 
+</app-thistlist>
+

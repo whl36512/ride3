@@ -1,0 +1,141 @@
+<div *ngIf="false"> https://material.angular.io/components/menu/overview </div>
+<div class=hide-unhide>
+	<button (click)='show_body=C.BODY_NOSHOW' *ngIf='show_body==C.BODY_SHOW' > {{C.ICON_ARROW_UP}}  </button>
+	<button (click)='show_body=C.BODY_SHOW'   *ngIf='show_body==C.BODY_NOSHOW' > {{C.ICON_ARROW_DOWN}}</button>
+</div>
+
+<div class="center f12" >Offer a Trip (I am a driver) </div>
+<div class={{show_body}} >
+	<form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf='show_form==C.BODY_SHOW'>
+		<dl> 
+	  		<dt>
+				<label for="p1_loc">From
+				<span *ngIf="p1_loc.invalid && (p1_loc.dirty || p1_loc.touched)"
+					class="alert alert-danger">
+					<span *ngIf="p1_loc.errors.required"> (required)  </span>
+				</span>
+				</label>
+			</dt>
+	  		<dd>
+	   			<input  type="text"  id="p1_loc" formControlName="p1_loc" 
+					placeholder="From" required
+					(keyup)='geocode("p1_loc", trip, form)' 
+					pattern=".{3,}"
+				/>
+				<span class="validity"></span>
+			</dd>
+
+	  		<dd  class="f08 clickable-text" (click)='show_map()' > 
+				{{trip.p1.lat}}  {{trip.p1.lon}} <br/>
+				 {{trip.p1.display_name}}
+			</dd>
+		</dl>
+
+		<dl >
+	  		<dt>
+				<label for="p2_loc">To
+				<span *ngIf="p2_loc.invalid && (p2_loc.dirty || p2_loc.touched)"
+					class="alert alert-danger">
+					<span *ngIf="p2_loc.errors.required"> (required)  </span>
+				</span>
+				</label>
+			</dt>
+	  		<dd>
+	   			<input  type="text"  id="p2_loc" formControlName="p2_loc" 
+					placeholder="To" required
+					(keyup)='geocode("p2_loc", trip, form)'  
+					pattern=".{3,}"
+				/>
+				<span class="validity"></span>
+			</dd>
+			<dd class="f08 clickable-text" (click)='show_map()' >
+				{{trip.p2.lat}} {{trip.p2.lon}} <br/>
+				{{trip.p2.display_name	}}
+			</dd>
+			<dt>
+			Distance (miles): 
+			<span *ngIf="trip.distance==C.ERROR_NO_ROUTE " class=error>No route</span>
+			<span *ngIf="trip.distance!=C.ERROR_NO_ROUTE "	   >{{trip.distance}}</span>
+			</dt>
+		</dl>
+
+		<dl >
+	  		<dt><label for="date1">Start Date</label></dt>
+	  		<dd>
+			<input type="date" formControlName="date1" 
+				pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" min={{today}} 
+				required 
+			/>
+			<span class="validity"></span>
+	  		</dd>
+
+	  		<dt><label for="departure_time">Departure Time</label></dt>
+	  		<dd>
+				<input type="time" formControlName="departure_time" step="60" 
+					required />
+				<span class="validity"></span>
+	  		</dd>
+		</dl>
+
+		<dl >
+			<dt><label for="seats">Availabel Seats: {{this.form.value.seats}} </label></dt>
+	  		<dd>
+			<input type="range" formControlName="seats" value="{{form.value.seats}}" min="1" max="{{C.MAX_SEATS}}" step=1 *ngIf="!form_saved_to_db"/> 
+	  		</dd>
+
+			<dt><label for="price">Price: ${{this.form.value.price}} per mile per passenger</label></dt>
+	  		<dd>
+			<input type="range" formControlName="price" value="0" min="0" max="{{C.MAX_PRICE}}" step=0.01 *ngIf="!form_saved_to_db"/>
+	  		</dd>
+		</dl>
+
+		<dl >
+	  		<dt>	
+				<label>Recurring: 
+	    			<input type="checkbox" formControlName="recur_ind" 
+					[disabled]="form_saved_to_db"  />
+				</label>
+			</dt>
+
+			<dd *ngIf="form.value.recur_ind">
+	  			<dl>
+	    			<dt><label for="date2">End Date (must be within 92 days after Start Date)</label></dt>
+	    			<dd>
+						<input type="date" id="date2" formControlName="date2" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" 
+							min={{next_n_days(form.value.date1,1)}} 
+							max={{next_n_days(form.value.date1,92)}} 
+							[required]="form.value.recur_ind"
+						/>
+						<span class="validity"></span>
+	    			</dd>
+  	
+	    			<dt><label>Recur on</label></dt>
+	    			<dd> 
+						<label><input type="checkbox" formControlName="day0_ind" >Sun </label>
+	    				<label><input type="checkbox" formControlName="day1_ind" />Mon </label>
+	    				<label><input type="checkbox" formControlName="day2_ind" />Tue </label>
+						<label><input type="checkbox" formControlName="day3_ind" />Wed </label> <br/>
+	    				<label><input type="checkbox" formControlName="day4_ind" />Thur </label>
+	    				<label><input type="checkbox" formControlName="day5_ind" />Fri </label>
+	    				<label><input type="checkbox" formControlName="day6_ind" />Sat </label>
+					</dd>
+	  			</dl>
+			</dd>
+		</dl>
+		<dl >
+	  		<dt><label for="description">Description</label></dt>
+	  		<dd *ngIf="!form_saved_to_db">
+			<textarea id="description" formControlName=description placeholder="For example, non-smoking, female only, flexible time, flexible pickup,etc" >{{form.value.description}} </textarea>
+	  		</dd>
+	  		<dd *ngIf="form_saved_to_db">
+				{{form.value.description}}
+	  		</dd>
+		<br/>
+		<button  type="submit" [disabled]="form.invalid || trip.distance==null || trip.distance=='no route' " >{{button_label}}</button>
+
+		</dl>
+      </form>
+</div>
+<div *ngIf='error_msg'      class=error 	[innerHTML]='error_msg' ></div>
+<div *ngIf='warning_msg'    class='warning' [innerHTML]='warning_msg' ></div>
+<div *ngIf='info_msg'       class='info' 	[innerHTML]='info_msg' ></div>

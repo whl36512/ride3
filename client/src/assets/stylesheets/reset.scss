@@ -1,0 +1,73 @@
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	font-family: calibri, tahoma, arial, sans-serif;
+	color: black;
+	font-size: 1rem;
+}
+
+
+dl, dt, dd , div, span, a {
+	margin: 0rem;
+	padding: 0rem;
+}
+
+dd {
+	margin-left: 1rem;
+}
+
+
+a {
+	text-decoration: none;
+	font-weight: normal;
+	color: black;
+}
+a:hover {
+	color: blue;
+}
+
+div.toggle, *[show=false] {
+	display: none;
+}
+
+/*
+.show {
+	display : block;
+}
+*/
+.noshow {
+	display : none;
+}
+
+div.center {
+	text-align:center
+}
+div.centerblock {
+/* use margin: auto to center a div */
+	margin: auto;
+}
+
+.f08 {
+	font-size: 0.8rem;
+}
+
+div.f12 {
+	font-size: 1.2rem;
+}
+
+div.f15 {
+	font-size: 1.5rem;
+}
+div.f18 {
+	font-size: 1.8rem;
+}
+
+input {
+	font-size: 1rem;
+}
+textarea {
+	font-size: 1rem;
+	width: 100%;
+}
+

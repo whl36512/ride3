@@ -1,0 +1,62 @@
+<div class="center f12">My Activities</div>
+
+<div class={{show_body}} >
+
+<form [formGroup]="form" >
+	<dl>
+		<dt>
+			<label for="date1">From: </label>
+		</dt>
+		<dd>
+			<input type="date"	formControlName="date1" (change)='onChange()' />
+		</dd>
+		<dt>
+			<label for="date2">To:</label>
+		</dt>
+		<dd>
+			<input	type="date" formControlName="date2" min={{form.value.date1}}
+				(change)='onChange()'
+			/>
+			<span class="validity"></span>
+		</dd>
+		<dt>
+			Show activities when I am a <br/>
+		</dt>
+		<dd>
+			<label><input type=checkbox formControlName='show_driver'
+				(change)='set_filter()' />driver</label>
+			<label><input type=checkbox formControlName='show_rider'
+				(change)='set_filter()' />rider</label>
+		</dd>
+		<dt>
+			Show activities when status is <br/>
+		</dt>
+		<dd>
+			<label><input type=checkbox formControlName='show_seats_available' 
+				(change)='set_filter()' />Published</label><br/>
+			<label><input type=checkbox formControlName='show_pending' 	
+				(change)='set_filter()' />Pending Comfirmation</label><br/>
+			<label><input type=checkbox formControlName='show_confirmed' 	
+				(change)='set_filter()' />Confirmed</label><br/>
+			<label><input type=checkbox formControlName='show_rejected'
+				(change)='set_filter()' />Rejected by Driver</label><br/>
+			<label><input type=checkbox formControlName='show_cancelled_by_driver'
+				(change)='set_filter()' />Cancelled by Driver</label><br/>
+			<label><input type=checkbox formControlName='show_cancelled_by_rider'
+				(change)='set_filter()' />Cancelled by Rider</label><br/>
+			<label><input type=checkbox formControlName='show_finished'
+				(change)='set_filter()' />Finished</label>
+		</dd>
+	</dl>
+</form>
+<div *ngIf='error_msg!=null' class=error>{{error_msg}}</div>
+<div *ngIf='warning_msg!=null' class=warning>{{warning_msg}}</div>
+<div *ngIf='info_msg!=null' class=info>{{info_msg}}</div>
+<p>
+<app-bookings *ngIf='bookings_from_db.length>0'
+	[bookings_from_db]="bookings_from_db"
+>
+
+</app-bookings>
+</div>
+

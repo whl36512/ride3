@@ -1,0 +1,41 @@
+<div class="center f12">Withdraw</div>
+<p>
+Deposit and withdraw are done through the Zelle network, offered by many banks, such as
+Chase Bank's QuickPay with Zelle, as well as Bank of America, 
+US Bank, PNC Bank, and other major banks.
+<p>
+You must have an email address registered at your bank to receive money.
+<p>
+If you have a positive balance in you account, 
+you can request a full or partial withdraw of the balance.
+<p>
+<div class="center f12">Withdraw Request</div>
+<form  *ngIf='is_signed_in' [formGroup]="form" (ngSubmit)="onSubmit()">
+	<dl>
+		<dt> Last Name : {{user_from_db.last_name}} </dt>
+		<dt> First Name : {{user_from_db.first_name}} </dt>
+       		<dt> Balance : ${{user_from_db.balance}} </dt>
+		<dt><label>Email registered at you bank (required) </label></dt>
+		<dd >      
+          		<input  type="email"  formControlName="bank_email" required 
+				pattern="{{C.EMAIL_PATTERN}}" [readonly]='saved'
+                	/> 
+			<span class="validity"></span>
+          	</dd>
+		<dt><label>Amount to withdraw</label> </dt>
+		<dd >      
+          		<input  type="number"  formControlName="requested_amount" required
+				max='{{user_from_db.balance}}' min=0.01 step=0.01
+                  		[readonly]='saved' 
+                	/> 
+			<span class="validity"></span>
+          	</dd>
+        </dl>
+        <br/>
+	<div class=center *ngIf='!saved'>
+		<button type="submit" [disabled]="form.invalid" >Send Request</button>
+	</div>
+</form>
+<div *ngIf='error_msg!=null' class=error>{{error_msg}}</div>
+<div *ngIf='warning_msg!=null' class=warning>{{warning_msg}}</div>
+<div *ngIf='info_msg!=null' class=info>{{info_msg}}</div>

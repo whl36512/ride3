@@ -1,0 +1,4 @@
+*.log
+.git
+./client/.git
+./server/.git

@@ -1,0 +1,18 @@
+/* style has to be applied on div#map. dont know why */
+div#map {
+        height: 100%;
+        width: 100%;
+        border: 0px solid #AAA;
+        z-index: 0;
+        position: fixed;
+        left: 0rem;
+        top: 0rem;
+        transform: scale(1);
+/* these are not working
+        zoom:100%;
+*/
+/*
+        position: absolute;
+*/
+}
+

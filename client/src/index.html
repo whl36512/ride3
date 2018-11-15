@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Rideshare</title>
+		<base href="/">
+	
+		<mmmmeta name="viewport" content="width=device-width, initial-scale=1"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+		<link rel="icon" type="image/x-icon" href="assets/images/icons8-carpool-100.svg">
+		<link rel="shortcut icon" type="image/png" href="assets/images/icons8-carpool-100.svg" />
+		<script src="https://cdn.jsdelivr.net/npm/node-forge@0.7.0/dist/forge.min.js"></script>
+		<script src="assets/javascripts/httpclient.js" type="text/javascript"></script>
+		<script src="assets/javascripts/crypto.js" type="text/javascript"></script>
+		<script src="assets/javascripts/linkedin.js" type="text/javascript"></script>
+		<script type="text/javascript" src="//platform.linkedin.com/in.js">
+			api_key: 86xvjldqclucd9
+			authorize: true
+			onLoad: ride.onLinkedInLoad
+		</script>
+	</head>
+	<body>
+		<!--
+		<ul class="signinout" >
+			<div id=signin onload='this.setAttribute("show", !(IN.User.isAuthorized())'> <script type="in/Login"></script></div>
+			<div id=signout onload='this.setAttribute("show", IN.User.isAuthorized()' onclick='ride.signout()'>Signout</div> 
+		</ul>
+		-->
+		<app-root></app-root>
+	</body>
+</html>

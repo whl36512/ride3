@@ -1,0 +1,83 @@
+selected {
+	background-color: #CFD8DC !important;
+	color: white;
+}
+
+.nav {
+	margin: 0rem ;
+	padding: 0;
+	list-style-type: none;
+	font-size: 1.2rem;
+	clear: both;
+
+	& a li {
+  		cursor: pointer;
+  		position: relative;
+  		left: 0;
+  		background-color: #EEE;
+  		margin: 0.2em;
+  		padding: 0.2rem 0.2rem;
+  		border-radius: 0.4rem ;
+		&:hover {
+  			color: #607D8B;
+  			background-color: #DDD;
+  			left: .1rem;
+		}
+	}
+	& a.active li {
+  		background-color: black;
+  		color: white;
+	}
+}
+
+.nav .badge {
+  display: inline-block;
+  font-size: small;
+  color: white;
+  padding: 0.8rem 0.7rem 0 0.7rem;
+  background-color: #607D8B;
+  line-height: 1rem;
+  position: relative;
+  left: -1px;
+  top: -4px;
+  height: 1.8rem;
+  margin-right: .8rem;
+  border-radius: 4px 0 0 4px;
+}
+
+div.topnav {   
+    position: fixed;
+    width: auto;
+    top: 0.5rem;
+    right: 0.5rem;
+    overflow: visible;
+    z-index:500;
+    border: 1px solid #AAA;
+    font-size: 1rem;
+    background-color: #eee; 
+    border-radius: 0.4rem ;
+    padding: 0rem;
+}
+
+#navicon{   
+	cursor: pointer;
+	float: right;
+	clear: both;
+	font-size: 2rem;
+	padding: 0rem;
+	margin: 0rem;
+    	border-radius: 0.4rem ;
+	&:hover {
+		color: #607D8B;
+		background-color: #DDD;
+	}
+}
+
+.topnav > .nav { display: none; }
+.topnav:focus-within > .nav { display:block; }
+
+
+#linkedin_signin {
+			width: 8rem;
+			height:	1.2rem ;
+}

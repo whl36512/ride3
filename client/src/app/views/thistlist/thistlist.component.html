@@ -1,0 +1,43 @@
+<div *ngIf='error_msg!=null'    class=error [innerHTML]='error_msg'></div>
+<div *ngIf='warning_msg!=null'  class=warning [innerHTML]='warning_msg'></div>
+<div *ngIf='info_msg!=null'     class=info [innerHTML]='info_msg'></div>
+
+<div class=warning *ngIf='false'>change_detect_count={{change_detect_counter()}}</div>
+<table>
+	<thead>
+		<tr >
+			<th>#</th>
+			<th>Date</th>
+			<th>Description</th>
+			<th>Credit</th>
+			<th>Debit</th>
+			<th>Pending<br/>Credit</th>
+			<th>Pending<br/>Debit</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr *ngFor="let trnx of trnx_from_db ;let i=index;
+			let even=even;let odd=odd; let first = first; let last = last; trackBy:trackByFunc"
+			[ngClass]="{ odd: odd, even: even }">
+			<td>{{i+1}}</td>
+			<td>{{trnx.date.slice(0,10)}} </td>
+			<td>{{trnx.description}}</td>
+			<td> 
+				<span *ngIf='trnx.actual_amount > 0' > {{trnx.actual_amount}}</span>
+			</td>
+			<td>
+				<span *ngIf='trnx.actual_amount < 0' > {{-trnx.actual_amount}}</span>
+			</td>
+			<td>
+				<span *ngIf='trnx.actual_amount ==null && trnx.requested_amount> 0' > 
+					{{trnx.requested_amount}}
+				</span>
+			</td>
+			<td> 
+				<span *ngIf='trnx.actual_amount ==null && trnx.requested_amount< 0' > 
+						{{-trnx.requested_amount}}
+				</span>
+			</td>
+		</tr>
+	</tbody>
+</table>
