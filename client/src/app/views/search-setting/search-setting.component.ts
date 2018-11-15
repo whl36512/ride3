@@ -30,6 +30,11 @@ import { StorageService} from '../../models/gui.service';
 import { Util		 		} from '../../models/gui.service';
 import { PinIcon		} from "../../models/map.service"
 import { BaseComponent	} from '../base/base.component' ;
+import { CommunicationService   }   from '../../models/communication.service' ;
+import { DBService              }   from '../../models/remote.service' ;
+import { GeoService             }   from '../../models/remote.service' ;
+import { MapService             }   from '../../models/map.service';
+
 
 @Component({
   selector	: 'app-search-setting'			,
@@ -46,12 +51,16 @@ export class SearchSettingComponent extends BaseComponent {
 	trip:any;
 	step=1;
 
-	constructor(
-		 public 	changeDetectorRef 		: ChangeDetectorRef
-//		, public router						: Router
-		//, private zone: NgZone
-	){ 
-		super(changeDetectorRef);
+    constructor( public changeDetectorRef   	: ChangeDetectorRef
+                , public mapService             : MapService
+                , public communicationService   : CommunicationService
+                , public dbService              : DBService
+                , public geoService             : GeoService
+                , public form_builder           : FormBuilder
+                , public router                 : Router )  {
+        super(changeDetectorRef,mapService, communicationService, dbService
+                , geoService, form_builder, router );
+
   		console.debug("SearchSettingComponent.constructor() enter")  ;
   		console.debug("201810291813 SearchSettingComponent.constructor() exit")  ;
   	} 

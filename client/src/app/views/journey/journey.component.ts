@@ -17,18 +17,20 @@ import { AbstractControl} from '@angular/forms';
 import { Subscription }   from 'rxjs';
 
 import { EventEmitter, Input, Output} from '@angular/core';
+import { Router                 }   from '@angular/router';
 
-import {GeoService} from '../../models/remote.service' ;
-import {DBService} from '../../models/remote.service' ;
-import {CommunicationService} from '../../models/communication.service' ;
 import { AppComponent } from '../../app.component';
 import { C } 			from '../../models/constants';
 import { StorageService } from '../../models/gui.service';
 import { UserService } from '../../models/gui.service';
 import { DotIcon } from '../../models/map.service';
 import { PinIcon } from '../../models/map.service';
-import { MapService } from '../../models/map.service';
 import { BaseComponent      } from '../base/base.component' ;
+import { CommunicationService   }   from '../../models/communication.service' ;
+import { DBService              }   from '../../models/remote.service' ;
+import { GeoService             }   from '../../models/remote.service' ;
+import { MapService             }   from '../../models/map.service';
+
 
 
 
@@ -45,11 +47,15 @@ export class JourneyComponent extends BaseComponent {
 
 	rider_criteria :any= null
 
-	constructor(
-		 public changeDetectorRef	: ChangeDetectorRef
-	////	, private zone: NgZone
-	){ 
-		super(changeDetectorRef);
+    constructor( public changeDetectorRef       : ChangeDetectorRef
+                , public mapService             : MapService
+                , public communicationService   : CommunicationService
+                , public dbService              : DBService
+                , public geoService             : GeoService
+                , public form_builder           : FormBuilder
+                , public router                 : Router )  {
+        super(changeDetectorRef,mapService, communicationService, dbService
+                , geoService, form_builder, router );
   		console.debug("201809262245", this.class_name, ".constructor() enter")  ;
 
 		this.journeys_from_db = this.Util.deep_copy(this.Status.search_result);

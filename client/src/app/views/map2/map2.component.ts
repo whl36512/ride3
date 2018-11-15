@@ -3,19 +3,23 @@ import { OnDestroy }			from '@angular/core';
 import { Subscription }			from 'rxjs';
 import { ChangeDetectionStrategy }          from '@angular/core';
 import { ChangeDetectorRef }    from '@angular/core';
+import { FormBuilder            }   from '@angular/forms';
+import { Router                 }   from '@angular/router';
 
 
 
 import * as L from "leaflet";
 
-import {MapService}				from "../../models/map.service"
-import {CommunicationService}	from "../../models/communication.service"
 import {DotIcon}				from "../../models/map.service"
 import {PinIcon}				from "../../models/map.service"
 import {C}						from "../../models/constants"
 import {Util}					from "../../models/gui.service"
-import {DBService}				from '../../models/remote.service' ;
 import { BaseComponent }		from '../base/base.component';
+import { CommunicationService   }   from '../../models/communication.service' ;
+import { DBService              }   from '../../models/remote.service' ;
+import { GeoService             }   from '../../models/remote.service' ;
+import { MapService             }   from '../../models/map.service';
+
 
 @Component({
 	selector: 'app-map2',
@@ -27,10 +31,16 @@ import { BaseComponent }		from '../base/base.component';
 })
 export class Map2Component extends BaseComponent {
 
-	constructor( public changeDetectorRef: ChangeDetectorRef
-		, public mapService: MapService)
-	{ 
-		super(changeDetectorRef);
+    constructor( public changeDetectorRef       : ChangeDetectorRef
+                , public mapService             : MapService
+                , public communicationService   : CommunicationService
+                , public dbService              : DBService
+                , public geoService             : GeoService
+                , public form_builder           : FormBuilder
+                , public router                 : Router )  {
+        super(changeDetectorRef,mapService, communicationService, dbService
+                , geoService, form_builder, router );
+
 		this.page_name=C.PAGE_MAP;
 
 		// body_show indicates the map page either has a high z-index or low z-index

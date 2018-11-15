@@ -6,16 +6,22 @@ import { ChangeDetectorRef } from '@angular/core';
 //import { FormControl } from '@angular/forms';
 //import { FormGroup } from '@angular/forms';
 //import { FormArray } from '@angular/forms';
-//import { FormBuilder } from '@angular/forms';
 //import { Validators } from '@angular/forms';
 //import { ValidatorFn } from '@angular/forms';
 //import { ValidationErrors } from '@angular/forms';
 //import { AbstractControl} from '@angular/forms';
 import { Subscription }	from 'rxjs';
 
+
 import { EventEmitter, Input, Output} from '@angular/core';
 
-//import {GeoService} from '../../models/remote.service' ;
+import { FormBuilder 			}	from '@angular/forms';
+import { Router                 }   from '@angular/router';
+import { CommunicationService   }   from '../../models/communication.service' ;
+import { DBService              }   from '../../models/remote.service' ;
+import { GeoService             }   from '../../models/remote.service' ;
+import { MapService             }   from '../../models/map.service';
+
 import { AppComponent } from '../../app.component';
 import { C} 		from '../../models/constants';
 //import { StorageService } from '../../models/gui.service';
@@ -39,8 +45,15 @@ export class DepositComponent extends BaseComponent {
 	user_from_db: any = {};
 	show_detail = false;
 
-	constructor( public changeDetectorRef	: ChangeDetectorRef) { 
-		super(changeDetectorRef);
+    constructor( public changeDetectorRef   	: ChangeDetectorRef
+                , public mapService             : MapService
+                , public communicationService   : CommunicationService
+                , public dbService              : DBService
+                , public geoService             : GeoService
+                , public form_builder           : FormBuilder
+                , public router                 : Router )  {
+        super(changeDetectorRef,mapService, communicationService, dbService
+                , geoService, form_builder, router );
 		console.debug("201809262245 DepositComponent.constructor() enter")	;
 		this.page_name=C.PAGE_DEPOSIT;
 		console.debug("201809262245 DepositComponent.constructor() exit")	;

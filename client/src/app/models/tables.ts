@@ -18,17 +18,17 @@ export	class	Usr{
 	public	profile_ind		:	boolean	;
 
 	public	names	=	class	names	{
-		static	const	USR_ID				=	"usr_id"			;
-		static	const	OAUTH_ID			=	"oauth_id"			;
-		static	const	IS_PROFILE_COMPLETE	=	"isProfileComplete"	;
-		static	const	OAUTH_ID_IN_COOKIE	=	"profile.id"		;
-		static	const	LAST_NAME_IN_COOKIE	=	"profile.lastName"	;	
-		static	const	FISRT_NAME_IN_COOKIE=	"profile.firstName"	;	
-		static	const	HEADLINE_IN_COOKIE	=	"profile.headline"	;
+		static	USR_ID				=	"usr_id"			;
+		static	OAUTH_ID			=	"oauth_id"			;
+		static	IS_PROFILE_COMPLETE	=	"isProfileComplete"	;
+		static	OAUTH_ID_IN_COOKIE	=	"profile.id"		;
+		static	LAST_NAME_IN_COOKIE	=	"profile.lastName"	;	
+		static	FISRT_NAME_IN_COOKIE=	"profile.firstName"	;	
+		static	HEADLINE_IN_COOKIE	=	"profile.headline"	;
 	}	;
 	public	values	=	class	values	{
-		static	const	PROFILE_COMPLETE	=	"true"	;
-		static	const	EMAIL_PATTERN		
+		static	PROFILE_COMPLETE	=	"true"	;
+		static	EMAIL_PATTERN		
 				=	"^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-]{1,30}\.){1,4}([a-zA-Z]{2,5})$"	;
 	}	;
 

@@ -13,6 +13,14 @@ import { AppComponent } from '../../app.component';
 import { C } from '../../models/constants';
 import { BaseComponent		} from '../base/base.component' ;
 
+import { FormBuilder            }   from '@angular/forms';
+import { Router                 }   from '@angular/router';
+import { CommunicationService   }   from '../../models/communication.service' ;
+import { DBService              }   from '../../models/remote.service' ;
+import { GeoService             }   from '../../models/remote.service' ;
+import { MapService             }   from '../../models/map.service';
+
+
 @Component({
 		selector	: 'app-message'
 	,	templateUrl	: './message.component.html'
@@ -38,11 +46,16 @@ export class MessageComponent extends BaseComponent {
 	// close message window after fixed time 
 	msg_no_activity_count_down: number = C.MSG_NO_ACTIVITY_COUNT_DOWN; 
 
-	constructor(
-		 public changeDetectorRef	: ChangeDetectorRef
-	//	, private zone: NgZone
-	){ 
-		super(changeDetectorRef);
+    constructor( public changeDetectorRef       : ChangeDetectorRef
+                , public mapService             : MapService
+                , public communicationService   : CommunicationService
+                , public dbService              : DBService
+                , public geoService             : GeoService
+                , public form_builder           : FormBuilder
+                , public router                 : Router )  {
+        super(changeDetectorRef,mapService, communicationService, dbService
+                , geoService, form_builder, router );
+
 		console.debug("201809262245 MessageComponent.constructor() enter")	;
 
 		this.timer_sub = BaseComponent.timer.subscribe(

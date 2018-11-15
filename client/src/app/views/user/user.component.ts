@@ -5,21 +5,26 @@ import { Component						} from '@angular/core';
 //import { OnInit						} from '@angular/core';
 //import { FormControl					} from '@angular/forms';
 //import { FormGroup					} from '@angular/forms';
-//import { FormBuilder					} from '@angular/forms';
+import { FormBuilder					} from '@angular/forms';
 import { Validators						} from '@angular/forms';
 import { ChangeDetectionStrategy						} from '@angular/core';
 import { ChangeDetectorRef				} from '@angular/core';
 import {AbstractControl,	ValidatorFn	} from '@angular/forms';
 //import {EventEmitter, Input, Output	} from '@angular/core';
+import { AppComponent					} from '../../app.component';
+import { Router                 }   from '@angular/router';
+
 
 import {Usr								} from '../../models/tables' ;
 //import {Constants						} from '../../models/constants' ;
 import {C								} from '../../models/constants' ;
 import {UserService						} from '../../models/gui.service' ;
-//import {DBService						} from '../../models/remote.service' ;
-//import {CommunicationService			} from '../../models/communication.service' ;
-import {BaseComponent					} from '../base/base.component' ;
-import { AppComponent					} from '../../app.component';
+import { BaseComponent					} from '../base/base.component' ;
+import { CommunicationService   }   from '../../models/communication.service' ;
+import { DBService              }   from '../../models/remote.service' ;
+import { GeoService             }   from '../../models/remote.service' ;
+import { MapService             }   from '../../models/map.service';
+
 
 
 @Component({
@@ -35,8 +40,16 @@ export class UserComponent extends BaseComponent {
 	saved=false;
 
 
-	constructor(public changeDetectorRef: ChangeDetectorRef)	{ 
-		super(changeDetectorRef);
+    constructor( public changeDetectorRef       : ChangeDetectorRef
+                , public mapService             : MapService
+                , public communicationService   : CommunicationService
+                , public dbService              : DBService
+                , public geoService             : GeoService
+                , public form_builder           : FormBuilder
+                , public router                 : Router )  {
+        super(changeDetectorRef,mapService, communicationService, dbService
+                , geoService, form_builder, router );
+
 		console.log("UserComponent.constructor() enter")	;
 		this.page_name = C.PAGE_USER;
 	}

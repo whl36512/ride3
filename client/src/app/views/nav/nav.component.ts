@@ -5,7 +5,13 @@ import { C } 			from '../../models/constants';
 //import { CommunicationService } from '../../models/communication.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { ChangeDetectionStrategy } from '@angular/core';
-import { Router             }   from '@angular/router';
+
+import { FormBuilder            }   from '@angular/forms';
+import { Router                 }   from '@angular/router';
+import { CommunicationService   }   from '../../models/communication.service' ;
+import { DBService              }   from '../../models/remote.service' ;
+import { GeoService             }   from '../../models/remote.service' ;
+import { MapService             }   from '../../models/map.service';
 
 
 import { BaseComponent  } from '../base/base.component' ;
@@ -20,10 +26,16 @@ import { BaseComponent  } from '../base/base.component' ;
 export class NavComponent extends BaseComponent {
 
 	show_nav=false ;
-	public constructor( public changeDetectorRef : ChangeDetectorRef
-						//,public router: Router
-	) {
-		super(changeDetectorRef);
+    constructor( public changeDetectorRef       : ChangeDetectorRef
+                , public mapService             : MapService
+                , public communicationService   : CommunicationService
+                , public dbService              : DBService
+                , public geoService             : GeoService
+                , public form_builder           : FormBuilder
+                , public router                 : Router )  {
+        super(changeDetectorRef,mapService, communicationService, dbService
+                , geoService, form_builder, router );
+
 	}
 
 	ngoninit() {}

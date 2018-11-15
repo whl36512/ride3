@@ -13,6 +13,7 @@ import { ValidatorFn } from '@angular/forms';
 import { ValidationErrors } from '@angular/forms';
 import { AbstractControl} from '@angular/forms';
 import { Subscription }	from 'rxjs';
+import { Router                 }   from '@angular/router';
 
 import { EventEmitter, Input, Output} from '@angular/core';
 
@@ -22,6 +23,11 @@ import { C } from '../../models/constants';
 import { Util } from '../../models/gui.service';
 import { StorageService } from '../../models/gui.service';
 import { BaseComponent } from '../base/base.component';
+import { CommunicationService   }   from '../../models/communication.service' ;
+import { DBService              }   from '../../models/remote.service' ;
+import { GeoService             }   from '../../models/remote.service' ;
+import { MapService             }   from '../../models/map.service';
+
 
 @Component({
 	selector: 'app-activity'
@@ -34,11 +40,15 @@ export class ActivityComponent extends BaseComponent {
 	bookings_from_db: any= [];
 	filter:any ;
 
-	constructor( public changeDetectorRef: ChangeDetectorRef
-	//	, private zone: NgZone
-	){
-		super(changeDetectorRef);
-
+    constructor( public changeDetectorRef       : ChangeDetectorRef
+                , public mapService             : MapService
+                , public communicationService   : CommunicationService
+                , public dbService              : DBService
+                , public geoService             : GeoService
+                , public form_builder           : FormBuilder
+                , public router                 : Router )  {
+        super(changeDetectorRef,mapService, communicationService, dbService
+                , geoService, form_builder, router );
 		console.debug("201809262245 ActivityComponent.constructor() enter")	;
 		this.page_name=C.PAGE_ACTIVITY;
 		console.debug("201809262245 ActivityComponent.constructor() exit")	;

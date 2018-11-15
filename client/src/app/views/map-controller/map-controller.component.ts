@@ -3,13 +3,13 @@ import { OnDestroy } 		from '@angular/core';
 import { Subscription }   	from 'rxjs';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { ChangeDetectorRef } from '@angular/core';
+import { FormBuilder            }   from '@angular/forms';
 import { Router             }   from '@angular/router';
 
 
 
 import * as L from "leaflet";
 
-import {MapService} from "../../models/map.service"
 import {DotIcon} 	from "../../models/map.service"
 import {PinIcon} 	from "../../models/map.service"
 import {C} 			from "../../models/constants"
@@ -17,8 +17,12 @@ import {Util} 		from "../../models/gui.service"
 //import {DBService} 	from '../../models/remote.service' ;
 import {Status} 	from "../../models/gui.service"
 import { StorageService     } from '../../models/gui.service';
-//import {CommunicationService} from "../../models/communication.service"
 import { BaseComponent      } from '../base/base.component' ;
+import { CommunicationService   }   from '../../models/communication.service' ;
+import { DBService              }   from '../../models/remote.service' ;
+import { GeoService             }   from '../../models/remote.service' ;
+import { MapService             }   from '../../models/map.service';
+
 
 
 @Component({
@@ -37,11 +41,16 @@ export class MapControllerComponent extends BaseComponent {
 	search_is_running: boolean;
 	map_is_moving:boolean ;
 
-	constructor( public changeDetectorRef   : ChangeDetectorRef
-				//, public router: Router 
-				//, public mapService: MapService 
-	) { 
-		super(changeDetectorRef);
+    constructor( public changeDetectorRef       : ChangeDetectorRef
+                , public mapService             : MapService
+                , public communicationService   : CommunicationService
+                , public dbService              : DBService
+                , public geoService             : GeoService
+                , public form_builder           : FormBuilder
+                , public router                 : Router )  {
+        super(changeDetectorRef,mapService, communicationService, dbService
+                , geoService, form_builder, router );
+
 		this.region_search_criteria = {} ;
 		this.map_region 			= {} ;
 		this.map_move_time			= 0;

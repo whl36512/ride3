@@ -7,7 +7,7 @@ import	{	Input			}	from	'@angular/core';
 //import  {   FormControl }   from    '@angular/forms';
 //import  {   FormGroup   }   from    '@angular/forms';
 //import  {   FormArray   }   from    '@angular/forms';
-//import  {   FormBuilder }   from    '@angular/forms';
+import  {   FormBuilder }   from    '@angular/forms';
 import  {   Validators  }		from    '@angular/forms';
 //import  {   ValidatorFn }		from    '@angular/forms';
 //import  {   ValidationErrors}   from    '@angular/forms';
@@ -16,6 +16,14 @@ import	{	AppComponent	}	from	'../../app.component';
 import	{	C				}	from	'../../models/constants';
 import	{	StorageService	}	from	'../../models/gui.service';
 import	{	BaseComponent	}	from	'../base/base.component'	;
+
+
+import { Router                 }   from '@angular/router';
+import { CommunicationService   }   from '../../models/communication.service' ;
+import { DBService              }   from '../../models/remote.service' ;
+import { GeoService             }   from '../../models/remote.service' ;
+import { MapService             }   from '../../models/map.service';
+
 
 @Component({
 		selector		:	'app-thist'
@@ -29,8 +37,16 @@ export	class	ThistComponent	extends	BaseComponent	{
 	filter			:	any			;
 	trans_to_show	:	any =	[]	;
 
-	constructor( public changeDetectorRef   : ChangeDetectorRef ){
-		super(changeDetectorRef);
+    constructor( public changeDetectorRef   : ChangeDetectorRef
+                , public mapService             : MapService
+                , public communicationService   : CommunicationService
+                , public dbService              : DBService
+                , public geoService             : GeoService
+                , public form_builder           : FormBuilder
+                , public router                 : Router )  {
+        super(changeDetectorRef,mapService, communicationService, dbService
+                , geoService, form_builder, router );
+
 		console.debug("201809262245	ThistComponent.constructor()	enter")	;
 		this.page_name=C.PAGE_THIST;
 		console.debug("201809262245	ThistComponent.constructor()	exit")	;

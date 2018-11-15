@@ -4,7 +4,7 @@
 
 //general modules
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+//import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 //import { AppComponent } 	from './app.component';
@@ -119,7 +119,7 @@ const appRoutes: Routes = [
 
 @NgModule({
 	imports: [
-		CommonModule,
+		//CommonModule,
 		RouterModule.forRoot(
 			appRoutes,
     			{ enableTracing: true } // <-- debugging purposes only

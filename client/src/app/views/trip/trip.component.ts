@@ -17,8 +17,6 @@ import { NgZone } from '@angular/core';
 import { Router             }   from '@angular/router';
 
 
-
-
 //import { EventEmitter, Input, Output} from '@angular/core';
 
 import { GeoService} from '../../models/remote.service' ;
@@ -29,6 +27,7 @@ import { C} from '../../models/constants';
 import { StorageService } from '../../models/gui.service';
 import { Util } from '../../models/gui.service';
 import { BaseComponent } from '../base/base.component' ;
+import { MapService             }   from '../../models/map.service';
 
 
 
@@ -54,16 +53,16 @@ export class TripComponent extends BaseComponent {
 	user_from_db: any = {};
 	show_form	=C.BODY_NOSHOW;
 
-	constructor(
-		  //private geoService		: GeoService
-		//, private dbService		: DBService
-		//, private form_builder		: FormBuilder
-			public changeDetectorRef	: ChangeDetectorRef
-		//,	public router	: Router
-		//, public  communicationService	: CommunicationService
-  		//, private zone			: NgZone
-	){ 
-		super(changeDetectorRef)
+    constructor( public changeDetectorRef   : ChangeDetectorRef
+                , public mapService             : MapService
+                , public communicationService   : CommunicationService
+                , public dbService              : DBService
+                , public geoService             : GeoService
+                , public form_builder           : FormBuilder
+                , public router                 : Router )  {
+        super(changeDetectorRef,mapService, communicationService, dbService
+                , geoService, form_builder, router );
+
 		this.page_name= C.PAGE_TRIP;
   		console.log("201811011725", this.class_name, '.constructor() exit')  ;
   	} 

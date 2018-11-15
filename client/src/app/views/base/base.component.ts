@@ -18,16 +18,16 @@ import { Router					}	from '@angular/router';
 
 
 import { AppInjector			} 	from '../../models/app-injector.service' ;
-import { GeoService				} 	from '../../models/remote.service' ;
-import { DBService				} 	from '../../models/remote.service' ;
 import { CommunicationService	}	from '../../models/communication.service' ;
+import { DBService				} 	from '../../models/remote.service' ;
+import { GeoService				} 	from '../../models/remote.service' ;
+import { MapService				} 	from '../../models/map.service';
 import { AppComponent			} 	from '../../app.component';
 import { C						}	from '../../models/constants';
 //import { StorageService		} 	from '../../models/gui.service';
 import { UserService			} 	from '../../models/gui.service';
 import { DotIcon				} 	from '../../models/map.service';
 import { PinIcon				} 	from '../../models/map.service';
-import { MapService				} 	from '../../models/map.service';
 import { Util					} 	from '../../models/gui.service';
 import { Status					} 	from '../../models/gui.service';
 
@@ -41,14 +41,14 @@ import { Status					} 	from '../../models/gui.service';
 })
 export abstract class BaseComponent implements OnInit, OnDestroy {
 
-	mapService				: MapService			;
+	//mapService				: MapService			;
 	//storageService			: StorageService		;	
-	communicationService	: CommunicationService	;	
-	dbService 				: DBService				;	
-	geoService				: GeoService			;	
+	//communicationService	: CommunicationService	;	
+	//dbService 				: DBService				;	
+	//geoService				: GeoService			;	
 	//changeDetectorRef		: ChangeDetectorRef 	;
-	form_builder			: FormBuilder 			;
-	router					: Router	 			;
+	//form_builder			: FormBuilder 			;
+	//router					: Router	 			;
 	//zone					:	NgZone
 
 	error_msg				: string|null	= null;
@@ -58,7 +58,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
 	show_body				: string|null	= C.BODY_SHOW ;
 	is_signed_in			: boolean 		= false;
 	page_name 				: string| null 	= null;
-	form 					: FormGroup|null=null;	// main for of a page
+	form 					: FormGroup|null= null;	// main for of a page
 
 	class_name = this.constructor.name;
 
@@ -81,7 +81,13 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
 	//protected logError(errorMessage: string) { . . . }	
 	//private logNavigation() { . . . }
 
-	constructor(public changeDetectorRef: ChangeDetectorRef
+	constructor(public changeDetectorRef		: ChangeDetectorRef
+				, public mapService				: MapService			
+				, public communicationService	: CommunicationService
+				, public dbService 				: DBService			
+				, public geoService				: GeoService	
+				, public form_builder			: FormBuilder 
+				, public router					: Router	 
 				//public zone: NgZone
 				) { 
 		console.debug('201811041002', this.class_name, '.constructor() enter.');
@@ -91,13 +97,13 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
 	ngOnInit() { 
 		console.debug ('201810290933 ', this.class_name,'.ngOnInit() enter.');
 		this.is_signed_in= UserService.is_signed_in();
-		this.wait_for_injector(this.setup_singlton_services);
+		this.wait_for_injector(this.setup_singleton_services);
 
 		this.ngoninit();
 		console.debug ('201810290933 ', this.class_name,'.ngOnInit() exit.');
 	}
 
-	setup_singlton_services(injector, this_var)
+	setup_singleton_services(injector, this_var)
 	{
 		if(!injector) return ;
 		if(!this_var.mapService)			this_var.mapService 		= injector.get(MapService);	
@@ -114,6 +120,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
 				this_var.subscription_action(msg);
 			}
 		);
+		//this_var.ngoninit();
 	}
 
 	wait_for_injector(on_got_injector: Function)

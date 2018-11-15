@@ -3,22 +3,27 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ride2": {
+    "ride3": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
       "prefix": "app",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "styleext": "scss"
+        }
+      },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/ride2",
+            "outputPath": "dist/ride3",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
+              "src/favicon.ico",
               "src/assets"
             ],
             "styles": [
@@ -42,25 +47,32 @@
               "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
-              "buildOptimizer": true
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
             }
           }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "ride2:build"
+            "browserTarget": "ride3:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ride2:build:production"
+              "browserTarget": "ride3:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ride2:build"
+            "browserTarget": "ride3:build"
           }
         },
         "test": {
@@ -75,6 +87,7 @@
             ],
             "scripts": [],
             "assets": [
+              "src/favicon.ico",
               "src/assets"
             ]
           }
@@ -93,19 +106,20 @@
         }
       }
     },
-    "ride2-e2e": {
+    "ride3-e2e": {
       "root": "e2e/",
       "projectType": "application",
+      "prefix": "",
       "architect": {
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "ride2:serve"
+            "devServerTarget": "ride3:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "ride2:serve:production"
+              "devServerTarget": "ride3:serve:production"
             }
           }
         },
@@ -121,5 +135,5 @@
       }
     }
   },
-  "defaultProject": "ride2"
+  "defaultProject": "ride3"
 }

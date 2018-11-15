@@ -18,16 +18,18 @@ import { Subscription }						from 'rxjs';
 //import { EventEmitter} 					from '@angular/core';
 import { Input} 							from '@angular/core';
 //import { Output} 							from '@angular/core';
+import { Router                 }   from '@angular/router';
 
-//import {GeoService} 						from '../../models/remote.service' ;
-//import {DBService} 						from '../../models/remote.service' ;
-//import {CommunicationService} 			from '../../models/communication.service' ;
+
 import { AppComponent } 					from '../../app.component';
 //import { Constants } 						from '../../models/constants';
 import { C } 								from '../../models/constants';
 import { BaseComponent } 					from '../base/base.component';
 import { StorageService } 					from '../../models/gui.service';
 import { Util } 							from '../../models/gui.service';
+import { CommunicationService} 			from '../../models/communication.service' ;
+import { DBService} 						from '../../models/remote.service' ;
+import { GeoService} 						from '../../models/remote.service' ;
 import { MapService } 						from '../../models/map.service';
 
 //import { UserService } 					from '../../models/gui.service';
@@ -51,12 +53,16 @@ export class BookingsComponent extends BaseComponent {
 
 	forms: any =[];
 
-	constructor(
-			public changeDetectorRef	: ChangeDetectorRef
-	//	,	private zone: NgZone
-	){ 
+    constructor( public changeDetectorRef       : ChangeDetectorRef
+                , public mapService             : MapService
+                , public communicationService   : CommunicationService
+                , public dbService              : DBService
+                , public geoService             : GeoService
+                , public form_builder           : FormBuilder
+                , public router                 : Router )  {
+        super(changeDetectorRef,mapService, communicationService, dbService
+                , geoService, form_builder, router );
 
-		super(changeDetectorRef);
 
 		console.debug("201809262245 BookingsComponent.constructor() enter")	;
 /*
