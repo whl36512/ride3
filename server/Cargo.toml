@@ -24,6 +24,7 @@ params ="*"
 #json = "*"
 iron-postgres-middleware = {git = "https://github.com/whl36512/iron-postgres-middleware.git"}
 db= {git = "https://github.com/whl36512/db.git" }
+ridews= { git = "https://github.com/whl36512/ridews.git" }
 #imap= {git = "https://github.com/mattnenterprise/rust-imap.git"}
 #openssl = { version = "0.10", features = ["vendored"] }
 #hyper-openssl = "*"
@@ -39,6 +40,7 @@ unicase = "*"
 chrono = "*"
 jsonwebtoken ="*"
 #regex = "1"
+websocket = "0.21.1"
 
 
 

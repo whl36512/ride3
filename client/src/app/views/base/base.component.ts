@@ -68,12 +68,13 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
 	subscription3			: Subscription |null = null;
 	form_status_sub			: Subscription |null = null;
 	form_value_sub			: Subscription |null = null;
+	ws_sub					: Subscription |null = null;
 	timer_for_injector_sub	: Subscription |null = null;
 	timer_sub				: Subscription |null = null;
 	static timer = timer(C.TIMER_INTERVAL, C.TIMER_INTERVAL);
 
 	C = C;
-	Constants = C;
+	//Constants = C;
 	Util = Util;
 	Status = Status;
 
@@ -97,56 +98,50 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
 	ngOnInit() { 
 		console.debug ('201810290933 ', this.class_name,'.ngOnInit() enter.');
 		this.is_signed_in= UserService.is_signed_in();
-		this.wait_for_injector(this.setup_singleton_services);
 
+		if(!this.subscription0) this.subscription0 =this.communicationService.msg.subscribe(
+			msg	=> {
+				//let message = JSON.parse(msg);
+				//this.subscription_action(message);
+				this.subscription_action(msg);
+			}
+		);
+		this.subscribe_websocket();
+		this.communicationService.ws_send(C.MSG_KEY_GREETING, `{"say":"Greeting from ${this.class_name}"}` );
 		this.ngoninit();
 		console.debug ('201810290933 ', this.class_name,'.ngOnInit() exit.');
 	}
 
-	setup_singleton_services(injector, this_var)
-	{
-		if(!injector) return ;
-		if(!this_var.mapService)			this_var.mapService 		= injector.get(MapService);	
-		if(!this_var.communicationService)	this_var.communicationService= injector.get(CommunicationService);
-		if(!this_var.dbService)				this_var.dbService 			= injector.get(DBService);	
-		if(!this_var.geoService)			this_var.geoService 		= injector.get(GeoService);	
-		if(!this_var.form_builder)			this_var.form_builder 		= injector.get(FormBuilder);	
-		if(!this_var.router)				this_var.router 			= injector.get(Router);	
-		//if(!this_var.zone)				this_var.zone		 		= injector.get(NgZone);	
-		//this.logNavigation();
 	
-		if(!this_var.subscription0) this_var.subscription0 =this_var.communicationService.msg.subscribe(
-			msg	=> {
-				this_var.subscription_action(msg);
-			}
-		);
-		//this_var.ngoninit();
-	}
-
-	wait_for_injector(on_got_injector: Function)
+	websocket_retry_count=0;
+	subscribe_websocket()
 	{
-		let injector = AppInjector.getInjector();	
-		if(injector) {
-			console.debug ('201811021124 ', this.class_name,'.wait_for_injector() injector available. ');
-			if( this.timer_for_injector_sub) this.timer_for_injector_sub.unsubscribe();
-			on_got_injector(injector, this);
+		if (this.websocket_retry_count > 2)
+		{
+			console.error("ERROR 201811141550", this.class_name
+				, '.subscribe_websocket() retried', this.websocket_retry_count, 'times. Bail out');
+			return;
 		}
-		else {
-			console.debug ('201811021124 ', this.class_name,'.wait_for_injector() injector not available. ');
-			if(!this.timer_for_injector_sub) {
-				console.debug ('201811021124 ', this.class_name,'.wait_for_injector() set up timer subscription');
-				this.timer_for_injector_sub = BaseComponent.timer.subscribe(
-            		// val will be 0, 1,2,3,...
-            		val => {
-						console.debug ('201811021124 ', this.class_name
-							,' .wait_for_injector() timer.val = ', val);
-						this.wait_for_injector( on_got_injector);	
-            		},
-        		);
-			}
-		}
+		this.websocket_retry_count +=1;
+		if(!this.ws_sub) 
+			this.ws_sub
+				=this.communicationService.ws_subject.subscribe(
+					msg	=> {
+						console.debug ('201811142241 ', this.class_name
+							,'.subscribe_websocket() got message. msg=');
+						console.debug (msg);
+						this.websocket_retry_count=0;
+						this.subscription_action(msg);
+					},
+					err	=> 	{	console.error("ERROR 201811141549 err=", err); 
+								this.ws_sub= null;
+								this.subscribe_websocket();
+							},
+					()	=> 	{ 	console.info ("201811141518 websocket closed"); 
+								this.ws_sub= null;
+							}
+				);
 	}
-
 
 	abstract ngoninit(): void;
 
@@ -160,6 +155,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
 		if( this.form_value_sub	!= null) this.form_value_sub.unsubscribe();
 		if( this.form_status_sub!= null) this.form_status_sub.unsubscribe();
 		if( this.timer_sub		!= null) this.timer_sub.unsubscribe();
+		if( this.ws_sub			!= null) this.ws_sub.unsubscribe();
 		this.communicationService.send_msg(C.MSG_KEY_MAP_BODY_NOSHOW, {});
 		this.onngdestroy();
 		console.debug ('201810290932 ', this.class_name,'.ngOnDestroy() exit.');
@@ -187,13 +183,6 @@ export abstract class BaseComponent implements OnInit, OnDestroy {
 		console.debug("201810131845 Constants.change_detect_counter() event=", e)	;
 		return this.change_detect_count ++;
 	}
-
-/*
-	close_page(): boolean{
-		this.communicationService.send_msg(C.MSG_KEY_PAGE_CLOSE, {page:this.page_name});
-		return false;
-	}
-*/
 
 	onSubmit(){}
 

@@ -92,7 +92,7 @@ export class Map2Component extends BaseComponent {
 			this.mapService.draw_line(msg.body);
 		}
 		else {
-			console.debug("201808222332 Map2Component.subscription_action. ignore msg");
+			this.subscription_action_ignore();
 		}
 	}
 

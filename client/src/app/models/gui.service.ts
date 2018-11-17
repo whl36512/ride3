@@ -218,6 +218,13 @@ export class Util {
 			, description			: ''
 			}
 	}
+	
+	static now_ts ()
+	{
+		let utc = new Date();
+        return utc.getTime() ;
+	}
+
 
 	static onError(error) {
 			console.log(`Error: ${error}`);

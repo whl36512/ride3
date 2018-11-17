@@ -31,6 +31,7 @@ export class Constants{
 	static URL_SAVE_MSG 		= '/ws/save_msg'	; 
 	static URL_WITHDRAW	 		= '/ws/withdraw'	; 
 	static URL_THIST			= '/ws/thist'		; 
+	static URL_WEBS				= 'ws://rideshare.beegrove.com:4202'		; 
 
 	static URL_GOOGLE_MAP		= 'https://www.google.com/maps/dir' ;
 
@@ -112,6 +113,7 @@ export class Constants{
  	static MSG_KEY_MAP_BODY_SHOW	= 'msgKeyShowMapBodyShow' 		; 
  	static MSG_KEY_MAP_BODY_NOSHOW	= 'msgKeyShowMapBodyNoShow' 	; 
  	static MSG_KEY_MAP_LINE		= 'msgKeyMapLine' 	; 
+ 	static MSG_KEY_GREETING		= 'msgKeyGreeting';
 
  	static BODY_SHOW			= 'show' 			; 
  	static BODY_NOSHOW			= 'noshow' 			; 
