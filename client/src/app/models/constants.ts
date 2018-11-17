@@ -31,7 +31,7 @@ export class Constants{
 	static URL_SAVE_MSG 		= '/ws/save_msg'	; 
 	static URL_WITHDRAW	 		= '/ws/withdraw'	; 
 	static URL_THIST			= '/ws/thist'		; 
-	static URL_WEBS				= 'ws://rideshare.beegrove.com:4202'		; 
+	static URL_WEBS				= 'ws://rideshare.beegrove.com:4210/websocket'		; 
 
 	static URL_GOOGLE_MAP		= 'https://www.google.com/maps/dir' ;
 
