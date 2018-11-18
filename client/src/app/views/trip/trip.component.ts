@@ -14,7 +14,7 @@ import { AbstractControl} from '@angular/forms';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { ChangeDetectorRef } from '@angular/core';
 import { NgZone } from '@angular/core';
-import { Router             }   from '@angular/router';
+import { Router			 }   from '@angular/router';
 
 
 //import { EventEmitter, Input, Output} from '@angular/core';
@@ -27,7 +27,7 @@ import { C} from '../../models/constants';
 import { StorageService } from '../../models/gui.service';
 import { Util } from '../../models/gui.service';
 import { BaseComponent } from '../base/base.component' ;
-import { MapService             }   from '../../models/map.service';
+import { MapService			 }   from '../../models/map.service';
 
 
 
@@ -53,15 +53,15 @@ export class TripComponent extends BaseComponent {
 	user_from_db: any = {};
 	show_form	=C.BODY_NOSHOW;
 
-    constructor( public changeDetectorRef   : ChangeDetectorRef
-                , public mapService             : MapService
-                , public communicationService   : CommunicationService
-                , public dbService              : DBService
-                , public geoService             : GeoService
-                , public form_builder           : FormBuilder
-                , public router                 : Router )  {
-        super(changeDetectorRef,mapService, communicationService, dbService
-                , geoService, form_builder, router );
+	constructor( public changeDetectorRef   : ChangeDetectorRef
+				, public mapService			 : MapService
+				, public communicationService   : CommunicationService
+				, public dbService			  : DBService
+				, public geoService			 : GeoService
+				, public form_builder		   : FormBuilder
+				, public router				 : Router )  {
+		super(changeDetectorRef,mapService, communicationService, dbService
+				, geoService, form_builder, router );
 
 		this.page_name= C.PAGE_TRIP;
   		console.log("201811011725", this.class_name, '.constructor() exit')  ;
@@ -145,12 +145,13 @@ export class TripComponent extends BaseComponent {
 			}
 		);
 	
-		this.form_value_sub = this.form.valueChanges
-			.subscribe( data => console.log('Form value changes', data));
-		this.form_status_sub = this.form.statusChanges
-			.subscribe(data => console.log('Form status changes', data));
 		this.show_map();
   	}
+
+	form_change_action(){
+		let changed_field=this.form_loc_change_detect();
+		if ( changed_field) this.geocode(changed_field, this.trip, this.form) ;
+	}
 
 	onSubmit() {
 		this.reset_msg() ;

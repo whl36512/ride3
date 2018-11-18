@@ -19,7 +19,6 @@
 	  		<dd>
 	   			<input  type="text"  id="p1_loc" formControlName="p1_loc" 
 					placeholder="From" required
-					(keyup)='geocode("p1_loc", trip, form)' 
 					pattern=".{3,}"
 				/>
 				<span class="validity"></span>
@@ -43,7 +42,6 @@
 	  		<dd>
 	   			<input  type="text"  id="p2_loc" formControlName="p2_loc" 
 					placeholder="To" required
-					(keyup)='geocode("p2_loc", trip, form)'  
 					pattern=".{3,}"
 				/>
 				<span class="validity"></span>

@@ -38,11 +38,12 @@ pub static SQL_THIST		: &str =  "select * 		 from funcs.get_money_trnx($1, $2) a
 pub static URL_WEBSOCKET_SERVER:   &str= "0.0.0.0:4202";
 
 
-pub static CORS_ALLOWED_HOSTS : [&str; 12] 
+pub static CORS_ALLOWED_HOSTS : [&str; 13] 
 	= [
 			"http://rideshare.beegrove.com:4200"
 		,	"http://rideshare.beegrove.com:4210"
 		,	"https://rideshare.beegrove.com:4210"
+		,	"http://rideshare.beegrove.com:4211"
 		, 	"rideshare.beegrove.com:4200"
 		,	"https://rideshare.beegrove.com"
 		,	"http://rideshare.beegrove.com"

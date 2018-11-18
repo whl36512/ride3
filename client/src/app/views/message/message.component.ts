@@ -80,6 +80,10 @@ export class MessageComponent extends BaseComponent {
 				}
 			},
 		);
+        this.subscribe_websocket();
+
+        this.communicationService.ws_send(C.MSG_KEY_GREETING, `{"say":"Greeting from ${this.class_name}"}` ) ;
+
 		console.debug("201809262245 MessageComponent.constructor() exit")	;
 	} 
 

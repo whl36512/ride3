@@ -4,7 +4,7 @@ export class Constants{
 
 	static PROFILE				= "profile" 		;
 	static JWT					= "jwt"				;
-	static SERVER_PORT			= "4210"			;
+	//static SERVER_PORT			= "4210"			;
 	//static SERVER_PORT			= "4201"			;
 
 	static GET_USER_URL 		= '/ws/get_user'	;
@@ -31,7 +31,12 @@ export class Constants{
 	static URL_SAVE_MSG 		= '/ws/save_msg'	; 
 	static URL_WITHDRAW	 		= '/ws/withdraw'	; 
 	static URL_THIST			= '/ws/thist'		; 
-	static URL_WEBS				= 'ws://rideshare.beegrove.com:4210/websocket'		; 
+	static URL_WEBS				= '/websocket'		; 
+	static URL_ROUTING			= '//router.project-osrm.org/route/v1/driving/' 	;
+	static URL_GEOCODE			= '//nominatim.openstreetmap.org/search/' 			;
+
+	static URL_SERVER			= '//'+ window.location.host ; // port is included
+
 
 	static URL_GOOGLE_MAP		= 'https://www.google.com/maps/dir' ;
 
@@ -56,10 +61,12 @@ export class Constants{
 	static EMAIL_PATTERN 		
 		= String.raw`^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-]{1,30}\.){1,4}([a-zA-Z]{2,5})$` ;
 
-	static MAX_PRICE 			= 0.2 				;
-	static MAX_PRICE_RIDER 		= 0.24 				;
+	static MAX_PRICE 			= 0.54 				;
+	static MAX_PRICE_RIDER 		= 0.54* 1.2 				;
 	static MAX_SEATS 			= 6					;
-	static MAX_SEARCH_TIGHTNESS = 5				;
+	static MAX_SEARCH_TIGHTNESS = 5					;
+
+	static FORM_DEBOUNCE_TIME 	= 500				;
 
 
 

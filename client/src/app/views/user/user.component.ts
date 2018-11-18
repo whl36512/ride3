@@ -60,8 +60,10 @@ export class UserComponent extends BaseComponent {
 			profile_ind: ["",	[Validators.required, Validators.pattern]],	 // sync validators must be in an array
 			//last_name: [''],
 		});
+		this.call_socket(C.URL_GET_USER, {});
 		//let user_from_cookie 	= UserService.get_profile_from_session();
 		let user_from_db_observable 	= this.dbService.call_db(C.URL_GET_USER, {}); 
+	
 		user_from_db_observable.subscribe(
 			user_from_db => {
 				console.info("201808201201 UserComponent.constructor() user_from_db =" 

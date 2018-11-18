@@ -2,6 +2,9 @@ import { Injectable } from "@angular/core";
 //import { HttpClient } from "@angular/common/http";
 //import { Location } from "./location";
 import * as L from "leaflet";
+import * as Rx from "rxjs";
+import { Subscription           }   from 'rxjs';
+
 
 import { C } 				from "./constants";
 import { Util     }			from './gui.service';
@@ -20,10 +23,17 @@ export class MapService {
 	private marker_arr: any =[];
 	private lines: any =[];
 
-	current_loc = {lat:null, lon:null};
+	//current_loc = {lat:null, lon:null};
+
+	geo_watcher : any;
+
+	current_loc = {lat:null,lon:null};
+    geo_watcher_sub         : Subscription |null = null;
+
 
 	constructor() {
-		this.getLocation();
+		this.geo_watcher = this.watchPosition(null);
+    	this.subscribe_geo_watcher();
 		const osmAttr =
 			"&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a>, " +
 			"Tiles courtesy of <a href='http://hot.openstreetmap.org/' target='_blank'>Humanitarian OpenStreetMap Team</a>";
@@ -67,6 +77,62 @@ export class MapService {
 		)
 		};
 	}
+
+    watchPosition(geolocationOptions) {
+        // http://xgrommx.github.io/rx-book/content/how_do_i/existing_api.html
+        if (!window.navigator.geolocation) return;
+        let source =  Rx.Observable.create(
+			function (observer) {
+				var watchId = window.navigator.geolocation.watchPosition(
+        		//var watchId = window.navigator.geolocation.getCurrentPosition(
+					function successHandler (loc) { observer.next(loc); }
+					, function errorHandler (err) { observer.error(err); }
+					, geolocationOptions
+				);
+				return function () {window.navigator.geolocation.clearWatch(watchId);};
+			}
+		)
+
+		//return source.publish().refCount();
+		if (source) {
+			console.debug('201811171420 MapService.watchPosition() geolocation observable created source=');
+			console.debug(source);
+		}
+		else  {
+			console.debug('201811171420 MapService.watchPosition() geolocation observable failed');
+		}
+		return source;
+    }
+
+    subscribe_geo_watcher() {
+        console.debug('201811171456' , 'GeoService.subscribe_geo_watcher enter');
+        let subscription = this.geo_watcher.subscribe(
+            position => {
+                console.debug('201811171337 GeoService.subscribe_geo_watcher'
+                    , `Next: ${position.coords.latitude}, ${position.coords.longitude}`);
+                this.current_loc.lat = position.coords.latitude;
+                this.current_loc.lon = position.coords.longitude;
+                },
+
+            err => {
+                var message = '';
+                switch (err.code) {
+                    case err.PERMISSION_DENIED:
+                        message = 'Permission denied';
+                        break;
+                    case err.POSITION_UNAVAILABLE:
+                        message = 'Position unavailable';
+                        break;
+                    case err.PERMISSION_DENIED_TIMEOUT:
+                        message = 'Position timeout';
+                        break;
+                }
+                console.error('ERROR: 201811171434 GeoService.subscribe_geo_watcher',  message);
+            },
+            () => console.debug('201811171343 GeoService.subscribe_geo_watcher completed')
+        );
+        this.geo_watcher_sub= subscription ;
+    }
 
 	clear_markers(){
 		for (let index in this.marker_arr){
@@ -356,19 +422,7 @@ export class MapService {
 		return true;
 	}
 
-	getLocation() {
-    		if (navigator.geolocation) {
-			let func_var= this.gotPosition;
-			navigator.geolocation.getCurrentPosition(func_var);
-		}
-	}
-	gotPosition(position) {
-		this.current_loc.lat = position.coords.latitude;
-		this.current_loc.lon = position.coords.longitude ;
-		console.debug ( '201810271949 mapService.gotPosition() latitude longitude'
-			, this.current_loc.lat, this.current_loc.lon );
-	}
-
+/*
 	routingUrl(start_lat, start_lon, end_lat, end_lon){
 	// curl 'http://router.project-osrm.org/route/v1/driving/13.388860,52.517037;13.397634,52.529407;13.428555,52.523219?overview=false'
 		let url= "https://router.project-osrm.org/route/v1/driving/" ;
@@ -377,6 +431,7 @@ export class MapService {
 		let urlEncoded=url+points+query ;
 		return urlEncoded;
 	}
+*/
 
 	static google_map_string(book): string | null {
 		if (!book) return null ;

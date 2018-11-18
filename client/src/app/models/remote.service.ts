@@ -91,6 +91,7 @@ export class HttpService {
 			return json_response; //  this is Observable<Json object>
 	}
 
+/*
 	subscribe(response: Observable<HttpResponse<string>> ) 
 	{
 		response.subscribe(
@@ -138,6 +139,7 @@ export class HttpService {
 
 		
 	}
+*/
 
 	/*
 	backoff(maxTries, ms) {
@@ -171,33 +173,35 @@ export class HttpService {
 @Injectable({
   providedIn: 'root'
 })
-export class DBService {
-	private static root_url  = window.location.protocol
-					+ '//' +window.location.hostname 
-					+ ":"+ C.SERVER_PORT ;
 
-	constructor(private httpService: HttpService){}
+
+export class DBService {
+	private static root_url  = window.location.protocol + C.URL_SERVER  ;
+
+	constructor(private httpService: HttpService){
+		console.debug('201811180021 DBService.constructor() root_url=', DBService.root_url);
+
+	}
 
 	call_db(relative_url: string, payload: any) : Observable<any> {  
-		let response_body: any ;
-		console.info("201808190205 DBService.call_db payload=\n"+ payload);
-		// add jwt token to the payload
-		let jwt=  UserService.get_jwt_from_session();
-		let profile = UserService.get_profile_from_session()
-		let combined_payload = {...payload, ...profile, ...jwt };  // add profile into the payload. server side must compare jwt and profile to make sure they match
-		//payload = this.add_token(relative_url, payload) ; 
-		console.info("201808190206 DBService.call_db after adding jwt and profile. combined_payload=\n" , C.stringify(combined_payload));
-
-		if ( combined_payload.error == undefined )
-		{
-			let complete_url = DBService.root_url + relative_url ;
-			response_body = this.httpService.request(C.POST, complete_url , C.stringify(combined_payload));
-		}
-		else response_body = of(combined_payload) ; //return observable containing error
+		let combined_payload = this.package_payload(payload);
+		let complete_url = DBService.root_url + relative_url ;
+		let response_body = this.httpService.request(C.POST, complete_url , C.stringify(combined_payload));
 		return response_body;
 	}
 
+	package_payload(payload) : any {
+		let jwt=  UserService.get_jwt_from_session();
+		let profile = UserService.get_profile_from_session()
+		// add profile into the payload. server side must compare jwt and profile to make sure they match
+		let combined_payload = {...payload, ...profile, ...jwt };  
+		console.info("201808190206 DBService.package_payload() after adding jwt and profile"
+			, "combined_payload=\n" 
+			, C.stringify(combined_payload));
+		return combined_payload;
+	}
 
+/*
 	get_user_from_db(user: any): Observable<any> {
 		return this.call_db(C.GET_USER_URL, user);
 	}
@@ -213,6 +217,7 @@ export class DBService {
 	get_journeys_from_db(trip:any): Observable<any> {
 		return this.call_db(C.URL_MYOFFERS, trip);
 	}
+*/
 
 
 
@@ -239,14 +244,15 @@ export class DBService {
 })
 export class GeoService {
 	//private static httpClient: HttpClient = HttpClient
+	private protocol = window.location.protocol;
 
 	constructor(private httpService: HttpService){}
 
 	private routingUrl(start_lat, start_lon, end_lat, end_lon){
-		let url= "http://router.project-osrm.org/route/v1/driving/" ;
+		//let url= "https://router.project-osrm.org/route/v1/driving/" ;
 		let points=start_lon+","+ start_lat + ";" + end_lon+ ","+ end_lat  ;
 		let query="?overview=false"  ;
-		let encodedUrl=url+points+query ;
+		let encodedUrl=this.protocol+C.URL_ROUTING+points+query ;
 		return encodedUrl;
 	}
 
@@ -263,11 +269,10 @@ export class GeoService {
 		//request:   https://nominatim.openstreetmap.org/search/135%20pilkington%20avenue,%20birmingham?format=json&polygon=0&addressdetails=0
 		//response:   [{"place_id":"91015286","licence":"Data © OpenStreetMap contributors, ODbL 1.0. https:\/\/osm.org\/copyright","osm_type":"way","osm_id":"90394480","boundingbox":["52.5487473","52.5488481","-1.816513","-1.8163464"],"lat":"52.5487921","lon":"-1.8164308339635","display_name":"135, Pilkington Avenue, Sutton Coldfield, Birmingham, West Midlands Combined Authority, West Midlands, England, B72 1LH, United Kingdom","class":"building","type":"yes","importance":0.411}]
 
-		let url="https://nominatim.openstreetmap.org/search/" ;
 		//	address = 135%20pilkington%20avenue,%20birmingham ;
 
 		let query="?format=json&polygon=0&addressdetails=0" ;
-		let encodedUrl = url+encodeURIComponent(address) +query;
+		let encodedUrl = this.protocol + C.URL_GEOCODE + encodeURIComponent(address) +query;
 		console.debug("20180815 geocode() encodedUrl="+encodedUrl) ;
 		let response_body= this.httpService.request(C.GET, encodedUrl, null) ;
 		return response_body ;

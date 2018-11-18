@@ -33,9 +33,15 @@ export class CommunicationService {
 
 	
 	public ws_last_activity_ts: number=0;
-	public ws_subject = webSocket(C.URL_WEBS);	
+
+	//calling webSocket alone does not establis any websocket connection
+	//must subscribe to the subject to establist two way websocket connection
+
+	protocol= window.location.protocol==='http:'? 'ws:':'wss:';
+	public ws_subject = webSocket(this.protocol+ C.URL_SERVER + C.URL_WEBS);	
 
 
+/*
 	ws_connect() {
 		let now_ts=Util.now_ts();
 		if (now_ts- this.ws_last_activity_ts > 10*60 ){
@@ -46,6 +52,7 @@ export class CommunicationService {
 		}
 		if ( ! this.ws_subject) this.ws_subject= webSocket(C.URL_WEBS);
 	}
+*/
 
 	ws_send(msg_key:string, message: any) {
 		let msg = this.package_msg(msg_key, message);

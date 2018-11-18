@@ -118,6 +118,11 @@ export class SearchSettingComponent extends BaseComponent {
 		}
 	}
 
+	form_change_action(){
+		let changed_field=this.form_loc_change_detect();
+		if ( changed_field) this.geocode(changed_field, this.trip, this.form) ;
+	}
+
 	show_map(){
 		//this.communicationService.send_msg(C.MSG_KEY_MAP_BODY_SHOW, {});
 		let pair = JSON.parse(C.stringify(this.trip));

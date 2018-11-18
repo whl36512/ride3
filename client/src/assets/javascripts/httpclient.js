@@ -1,5 +1,5 @@
 var rideHttpClient = {
-	port : 4210,
+	//port : 4210,
 	//port : 4201,
 	sendRequestWithCallback: function (urlEncoded, method, action, elem, callback)
 	{
@@ -30,7 +30,7 @@ var rideHttpClient = {
 	sendRequestToServerWithCallback: function (data, method, encodedRelativeUrl, elem, callback)
 	{
 		//disregard method. Always POST
-		var root = "http://"+window.location.hostname + ":"+ this.port ;
+		var root = window.location.protocol + "//"+window.location.hostname + ":"+ window.location.port;
 		var url = root + encodedRelativeUrl ;
 		return rideHttpClient.sendRequestWithCallback(data, "POST", url, null,  callback);
 	},
