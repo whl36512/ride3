@@ -59,6 +59,20 @@ $body$
 $body$
 language sql;
 
+
+create or replace view funcs.constants
+as
+select 	  
+	  0.2 			booking_fee
+	, 1.2 			margin_factor
+	, 0.54 			max_price_driver
+	, 0.54 * 1.2 	max_price_rider
+	, 6			 	max_seats
+;
+
+grant select on funcs.constants to ride;
+	
+
 create or replace function funcs.calc_cost(price numeric 
 					, distance	numeric
 					, seats integer
@@ -1210,23 +1224,29 @@ BEGIN
 	returning * into i1 
 	;
 
-		update money_trnx t
-		set 
-						trnx_cd						= coalesce(s0.trnx_cd						, t.trnx_cd				 )	 
-				, requested_amount	 = coalesce(s0.requested_amount	 , t.requested_amount	)
-				, actual_amount			= coalesce(s0.actual_amount			, t.actual_amount		 )
-				, request_ts				 = case when s0.requested_amount	is null then t.request_ts				else clock_timestamp()		end
-				, actual_ts					= case when s0.actual_amount		 is null then t.actual_ts				 else clock_timestamp()		end
-				, bank_email				 = coalesce(s0.bank_email				 , t.bank_email				)
-				, reference_no			 = coalesce(s0.reference_no			 , t.reference_no			)
-				, cmnt							 = coalesce(s0.cmnt							 , t.cmnt							)
-				, c_ts							 = coalesce(s0.c_ts							 , t.c_ts							)
-				, m_ts							 = coalesce(s0.m_ts							 , t.clock_timestamp() )
-		where t.money_trnx_id in ( s0.money_trnx_id, i1.money_trnx_id)
-		returning t.* into u1 
-		;
+	update money_trnx t
+	set 
+		trnx_cd				= coalesce(s0.trnx_cd				, t.trnx_cd				)	 
+		, requested_amount	= coalesce(s0.requested_amount	 	, t.requested_amount	)
+		, actual_amount		= coalesce(s0.actual_amount			, t.actual_amount		)
+		, request_ts		= case 	when s0.requested_amount	is null 
+									then t.request_ts				
+									else clock_timestamp()		
+								end
+		, actual_ts			= 	case	when s0.actual_amount	is null 
+									then t.actual_ts				 
+									else clock_timestamp()		
+								end
+		, bank_email		= coalesce(s0.bank_email			, t.bank_email			)
+		, reference_no		= coalesce(s0.reference_no			, t.reference_no		)
+		, cmnt				= coalesce(s0.cmnt					, t.cmnt				)
+		, c_ts				= coalesce(s0.c_ts					, t.c_ts				)
+		, m_ts				= coalesce(s0.m_ts					, t.clock_timestamp()	)
+	where t.money_trnx_id in ( s0.money_trnx_id, i1.money_trnx_id)
+	returning t.* into u1 
+	;
 	
-		return u1;
+	return u1;
 END
 $body$
 language plpgsql;
