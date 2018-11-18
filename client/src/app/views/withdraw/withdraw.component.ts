@@ -106,7 +106,7 @@ onSubmit() {
 				, C.stringify(money_trnx_from_db));
 			if(money_trnx_from_db.requested_amount < 0 ) { //withdraw is a debit. So negative number
 				this.saved=true;
-				this.info_msg='Request sent';
+				this.info_msg='Request sent. it will be reviewed and processed.';
 			}
 			this.changeDetectorRef.detectChanges();
 		},

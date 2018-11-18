@@ -68,6 +68,7 @@ select
 	, 0.54 			max_price_driver
 	, 0.54 * 1.2 	max_price_rider
 	, 6			 	max_seats
+	, 92			max_date_range
 ;
 
 grant select on funcs.constants to ride;
@@ -254,11 +255,13 @@ create or replace function funcs.validate_trip( in_trip text)
 as
 $body$
 DECLARE
-	c0 funcs.criteria ;
-	t0 trip ;
+	c0	funcs.criteria ;
+	t0	trip ;
+	c	funcs.constants  ;
 BEGIN
 	SELECT * into c0	FROM funcs.json_populate_record(NULL::funcs.criteria	, in_trip) ;
 	SELECT * into t0	FROM funcs.json_populate_record(NULL::trip				, in_trip) ;
+	select * into c		from funcs.constants	;
 	--in_trip has both dat1, date 2 and start_date , end_date
 	
 	if t0.distance			<=	0					then return false; end if;
@@ -271,10 +274,10 @@ BEGIN
 	if t0.departure_time	is null					then return false; end if;
 	if t0.price				is null					then return false; end if;
 	if t0.price				<	0 					then return false; end if;
-	if t0.price				>	0.20 				then return false; end if;
+	if t0.price				>	c.max_price_driver	then return false; end if;
 	if t0.seats				is null					then return false; end if;
 	if t0.seats				<	1 					then return false; end if;
-	if t0.seats				>	6 					then return false; end if;
+	if t0.seats				>	c.max_seats 		then return false; end if;
 	if c0.date1 			is null					then return false; end if;
 	if c0.date1 			< now()::date -1		then return false; end if;
 	if t0.recur_ind 		is null					then return false; end if;
@@ -287,7 +290,7 @@ BEGIN
 	if t0.day6_ind	 		is null					then return false; end if;
 	if t0.recur_ind	and c0.date2 is null			then return false; end if;
 	if t0.recur_ind	and c0.date2 <= c0.date1		then return false; end if;
-	if t0.recur_ind	and c0.date2 > 	c0.date1+ 92	then return false; end if;
+	if t0.recur_ind	and c0.date2 > 	c0.date1+ c.max_date_range	then return false; end if;
 	if t0.recur_ind and not t0.day0_ind and not t0.day1_ind and not t0.day2_ind 
 					and not t0.day3_ind and not t0.day4_ind and not t0.day5_ind 
 					and not t0.day6_ind 
@@ -330,7 +333,7 @@ BEGIN
 		select * from funcs.create_journey(t1.trip_id) into dummy;
 	else
 		insert into journey (trip_id, journey_date, departure_time, j_epoch, seats, price)
-		select 	trip1.trip_id
+		select 	t1.trip_id
 			, t1.start_date
 			, t1.departure_time
 			, extract(epoch from (t1.start_date + t1.departure_time ) )
@@ -382,10 +385,12 @@ create or replace function funcs.upd_journey( in_journey text, in_dummy text)
 as
 $body$
 DECLARE
-	journey0 RECORD ;
-	journey1 RECORD ;
+	journey0	RECORD ;
+	journey1	RECORD ;
+	c			funcs.constants  ;
 BEGIN
 	SELECT * into journey0 FROM funcs.json_populate_record(NULL::journey , in_journey) ;
+	select * into c		from funcs.constants	;
 
 	update journey j
 	set seats = least(coalesce (journey0.seats, j.seats), 6)
@@ -510,9 +515,11 @@ DECLARE
 	rider_id1 uuid;
 	journey1 RECORD ;
 	jsonrow json;
+	c			funcs.constants  ;
 BEGIN
 	SELECT * into book0 FROM funcs.json_populate_record(NULL::book , in_book) ;
 	SELECT * into user0 FROM funcs.json_populate_record(NULL::usr , in_user) ;
+	select * into c		from funcs.constants	;
 
 	select b.book_id, j.journey_id, t.trip_id, t.driver_id, b.rider_id
 	into ids
@@ -856,12 +863,12 @@ $body$
 	, c0 as (
 		-- bounding box
 		SELECT		
-				least		((t.p1).lat, (t.p2).lat) p1_lat	
-			, greatest((t.p1).lat, (t.p2).lat) p2_lat	
+				least	((t.p1).lat, (t.p2).lat) p1_lat	
+			, greatest	((t.p1).lat, (t.p2).lat) p2_lat	
 			, least		((t.p1).lon, (t.p2).lon) p1_lon
-			, greatest((t.p1).lon, (t.p2).lon) p2_lon	
+			, greatest	((t.p1).lon, (t.p2).lon) p2_lon	
 			, coalesce(t.seats		, 1)				 seats
-			, coalesce(t.price		, 0.24)/1.2			max_driver_price
+			, coalesce(t.price/c.margin_factor		, c.max_price_driver)	max_price_driver
 			, funcs.rbearing(in_criteria)- 43+4*search_tightness		min_rdir
 			, funcs.rbearing(in_criteria)+ 43-4*search_tightness 		max_rdir
 			, funcs.rbearing(in_criteria)- 43+4*search_tightness + 360	min_rdir_360
@@ -887,7 +894,9 @@ $body$
 			, t.distance /(3-0.2*search_tightness)		min_distance
 			, t.distance *(4-0.2*search_tightness)								max_distance
 			, 1.0/60*(0.1+0.05*search_tightness)		axes_move
+			, c.margin_factor
 		FROM funcs.json_populate_record(NULL::funcs.criteria , in_criteria) t 
+				, funcs.constants	c	
 	)
 	, a as (
 		select t.start_display_name, t.end_display_name 
@@ -905,7 +914,7 @@ $body$
 		--	, u.balance
 			, j.seats
 			, funcs.calc_cost(j.price, c0.distance , c0.seats , true) rider_cost
-			, j.price*1.2 || ' per mile' rider_price
+			, j.price*c0.margin_factor || ' per mile' rider_price
 			, coalesce (b.seats,0) seats_booked
 			, case when u.balance >=	funcs.calc_cost(j.price ,t.distance	,c0.seats , true)
 				then true else false 
@@ -949,7 +958,7 @@ $body$
 					)
 		where j.status_code='A'
 		and j.seats >= c0.seats
-		and j.price <= c0.max_driver_price
+		and j.price <= c0.max_price_driver
 		and j.journey_date between c0.date1 and c0.date2
 		and j.departure_time between c0.time1 and c0.time2
 		order by j.journey_date , j.departure_time
