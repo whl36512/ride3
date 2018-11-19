@@ -30,13 +30,12 @@ CREATE DOMAIN score integer	CHECK ( value in (1,2,3,4,5));
 CREATE DOMAIN ridemoney decimal(10,4) ;
 
 CREATE TYPE location AS
-(
-	  loc			text 	-- user input address
+	(
+		loc			text 	-- user input address
 	, lat			decimal(18,14)
 	, lon			decimal(18,14)
 	, display_name	text		-- reverse geocoded
 );
-
 
 create table usr
 (
@@ -64,52 +63,132 @@ create table usr
 
 create index ix_usr_oauth_id on usr(oauth_id);
 
-CREATE TABLE trip  as
+CREATE TABLE trip
 (
-		trip_id		sys_id		not null
-	,	trip_pid	sys_id		-- -- if trip_pid is null, the row is an offer, otherwise it is a booking
-	,	role		char(1)		-- Driver Rider
-	,	usr_id		sys_id not null
-	,	p1			location
-	,	p2			location
-	,	dir			real
-	,	price		ridemoney
-	,	cost		ridemoney
-	,	distance	decimal(8,2)    not null default 0
-	,	seats		smallint
-	,	penalty		ridemoney
-	,	score		smallint
-	,	cmt			text
-	,	book_ts		sys_ts
-	,	confirm_ts	sys_ts
-	,	cancel_ts	sys_ts
-	,	finish_ts	sys_ts
-	,	status_cd	text 	-- for offer Active, Expired, No more Booking
-							-- for booking, Pending confirmation, Booked, trip Started,
-							-- Cancelled by Offerer, Cancelled by Booker, Finished, Rejected by driver
-	,	description text
-	,	c_ts		sys_ts not null
-	,	m_ts		sys_ts not null
-	,	c_usr 		text
-	,	constraint pk_trip		PRIMARY KEY (trip_id)
-	,	constraint fk_trip2trip 	foreign key (trip_pid)	REFERENCES	trip 	( trip_id)
-	,	constraint fk_trip2usr 	foreign key (usr_id)	REFERENCES	usr 	( usr_id)
+	trip_id		 sys_id not null
+	, driver_id		sys_id not null
+	, start_date		date	not null
+	, end_date		date	-- last date if recurring, null otherwise
+	, departure_time		time	not null default current_time
+	, start_loc		textwithdefault not null
+	, start_display_name	textwithdefault not null
+	, start_lat		decimal(18,14) not null default 0
+	, start_lon		decimal(18,14) not null default 0
+	, end_loc		textwithdefault not null
+	, end_display_name	textwithdefault not null
+	, end_lat		decimal(18,14) not null default 0
+	, end_lon		decimal(18,14) not null default 0
+	, distance		decimal(8,2)	not null default 0
+	, dir			double precision				not null
+	, price		 	ridemoney	not null default 0.1 -- price per mile
+	, recur_ind		boolean not null default false
+	, status_code		char(1) not null default	'A' -- Pending, Active,	Cancelled,	Expired
+	, description		text
+	, seats		 	integer not null default 3
+	, day0_ind		boolean not null default false		-- sunday
+	, day1_ind		boolean not null default false
+	, day2_ind		boolean not null default false
+	, day3_ind		boolean not null default false
+	, day4_ind		boolean not null default false
+	, day5_ind		boolean not null default false
+	, day6_ind		boolean not null default false
+	, c_ts			sys_ts not null
+	, m_ts			sys_ts not null
+	, c_usr 		text
+	, constraint pk_trip PRIMARY KEY (trip_id)
+	, constraint fk_trip2user foreign key ( driver_id) REFERENCES	usr ( usr_id)
 );
+create index ix_trip_driver_id on trip(driver_id);
+create index ix_trip_dir_duistance on trip(dir, distance);
+alter table trip add constraint ck_trip_status_code check (status_code in ('A','E') );
 
-create index ix_trip_usr_id on trip(usr_id);
-create index ix_trip_dir_distance on trip(dir, distance) where status_cd = 'A' and seats > 0;
-alter table trip add constraint ck_trip_status_code 
-	check (status_cd in ('A','E', 'NB', 'P', 'B', 'CO', 'CB', 'R' ) );
+CREATE TABLE journey
+(
+	journey_id			sys_id	not null
+	, trip_id			sys_id 	null
+	, journey_date		date	not null
+	, departure_time	time	not null default current_time
+	, j_epoch			integer not null --departure date and time since epoch
+	, status_code		char(1) not null default	'A' -- Pending, Active, Cancelled,	Expired
+	, price		 		ridemoney	not null default 0.1 -- price per mile
+	, seats		 		integer not null default 3 
+	, c_ts				sys_ts	not null
+	, m_ts				sys_ts	not null
+	, c_usr 			text
+	, constraint pk_journey PRIMARY KEY (journey_id)
+	, constraint fk_jn2trip foreign key ( trip_id) REFERENCES	trip ( trip_id)
+);
+create index ix_jn_trip_id on journey(trip_id);
+create index ix_jn_j_epoch on journey(j_epoch) where status_code = 'A' and seats > 0;
 
-create table money_tran (
-	money_tran_id		sys_id not null
+
+--create table book_status(
+	--status_cd 	char(1) not null
+	--, description	textwithdefault not null
+	--, constraint pk_book_status PRIMARY KEY (status_cd)
+--);
+
+--insert into book_status 
+--values 
+	--('P', 'Pending confirmation')
+--, ('I', 'Insufficient balance')
+--, ('B', 'Confirmed')
+--, ('S', 'trip started')
+--, ('R', 'cancelled by Rider')
+--, ('D', 'cancelled by Driver')
+--, ('F', 'Finished')
+--, ('J', 'Rejected by driver')
+--;
+
+create table book
+(
+	book_id			sys_id not null
+	, journey_id		sys_id not null
+	, rider_id		sys_id	not null
+	, pickup_loc		textwithdefault not null
+	, pickup_display_name	textwithdefault not null
+	, pickup_lat		decimal(18,14) not null default 0
+	, pickup_lon		decimal(18,14) not null default 0
+	, dropoff_loc		textwithdefault not null
+	, dropoff_display_name	textwithdefault not null
+	, dropoff_lat		decimal(18,14) not null default 0
+	, dropoff_lon		decimal(18,14) not null default 0
+	, distance		decimal(8,2)	not null default 0
+	, seats			integer not null default 1
+	, driver_price		ridemoney not null default 0
+	, driver_cost		ridemoney not null default 0
+	, rider_price		ridemoney not null default 0
+	, rider_cost		ridemoney not null default 0
+	, penalty_to_driver	ridemoney not null default 0	
+	, penalty_to_rider	ridemoney not null default 0
+	, status_cd		char(1) not null default	'P' 
+-- Pending confirmation, Booked, trip Started, cancelled by Rider, cancelled by Driver, Finished, Rejected by driver
+	, rider_score		smallint	CHECK ( rider_score in (1,2,3,4,5))
+	, driver_score		smallint	CHECK ( rider_score in (1,2,3,4,5))
+	, rider_comment		text
+	, driver_comment	text
+	, c_ts			sys_ts not null
+	, m_ts			sys_ts not null
+	, book_ts		sys_ts not null
+	, driver_cancel_ts	timestamp with time zone
+	, rider_cancel_ts	timestamp with time zone
+	, finish_ts		timestamp with time zone
+	, constraint pk_book PRIMARY KEY (book_id)
+	, constraint fk_book2jn foreign key ( journey_id) REFERENCES	journey ( journey_id)
+	, constraint fk_book2usr foreign key ( rider_id) REFERENCES	usr ( usr_id)
+);
+create index ix_book_journey_id on book(journey_id);
+create index ix_book_rider_id on book(rider_id);
+alter table book add constraint ck_book_status_cd check (status_cd in ('P','B','S','R','D','F','J') );
+
+create table money_trnx (
+	money_trnx_id		sys_id not null
 	, usr_id		sys_id not null
 	, trnx_cd		text not null 
 				-- Deposit, Withdraw, Penalty, trip Finished, Booking
 	, status_cd		text not null default 'K' --
 	, requested_amount	ridemoney 
 	, actual_amount		ridemoney
-	, balance			ridemoney 	-- balance after trnasaction
 	, request_ts		timestamp with time zone
 	, actual_ts		timestamp with time zone
 	, bank_email		email
@@ -150,7 +229,7 @@ create table code (
 
 insert into code values
 	('BK', 'P', 'Pending confirmation')
---, ('BK', 'I', 'Insufficient balance')
+, ('BK', 'I', 'Insufficient balance')
 , ('BK', 'B', 'Confirmed')
 , ('BK', 'S', 'trip started')
 , ('BK', 'R', 'cancelled by Rider')
@@ -165,10 +244,9 @@ insert into code values
 , ('TRAN', 'F', 'Trip Finished')
 , ('TRIP', 'A', 'Active')
 , ('TRIP', 'E', 'Expired')
-, ('TRIP', 'NB', 'No more booking allowed')
---, ('JN'	, 'A', 'Active')
---, ('JN'	, 'E', 'Expired')
-, ('TRAN_STATUS', 'K', 'OK, Success')
+, ('JN'	, 'A', 'Active')
+, ('JN'	, 'E', 'Expired')
+, ('TRAN_STATUS', 'K', 'Success')
 , ('TRAN_STATUS', 'F', 'Failed')
 ;
 
@@ -182,9 +260,6 @@ insert into code values
 --alter table msg add FOREIGN KEY (book_id) REFERENCES book (book_id);
 --alter table msg add FOREIGN KEY (usr_id) REFERENCES usr (usr_id);
 
-create view trip_status as select cd status_cd, description 
-from code where code_type ='TRIP';
-
 create view book_status as select cd status_cd, description 
 from code where code_type ='BK';
 
@@ -194,13 +269,12 @@ from code where code_type='TRAN';
 --grant all on public.criteria to ride;
 grant all on public.usr to ride;
 grant all on public.trip to ride;
---grant all on public.journey to ride;
---grant all on public.book to ride;
+grant all on public.journey to ride;
+grant all on public.book to ride;
 --grant all on public.book_status to ride;
 grant all on public.money_trnx to ride;
 grant all on public.msg to ride;
 grant all on public.code to ride;
-grant all on public.trip_status to ride;
 grant all on public.book_status to ride;
 grant all on public.money_trnx_trnx_cd to ride;
 
